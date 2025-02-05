@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from environs import Env
 
 env = Env()
@@ -137,7 +138,15 @@ AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 )
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# settings.py
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp-relay.brevo.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "7a5ed6003@smtp-brevo.com"
+EMAIL_HOST_PASSWORD = "xsmtpsib-fa8beede8d4b589ec6c4c3a14e6dce7e76d4e9dc9cdc1eb6285289e1afc23e40-hTKm54fycJMkRqn3"  # Replace with your SMTP password
+DEFAULT_FROM_EMAIL = "boutique.elegant32@gmail.com"
 
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
