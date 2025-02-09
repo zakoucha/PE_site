@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 
-from .models import Lesson
+from .models import Lesson, Review
 
 User = get_user_model()
 
@@ -11,18 +11,27 @@ class LessonTests(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.user = User.objects.create_user(username="admin", password="password123")
+        cls.user = User.objects.create_user(
+            username="reviewuser",
+            email="reviewuser@email.com",
+            password="testpass123",
+        )
 
         cls.lesson = Lesson.objects.create(
             title="test",
             description="text",
             author=cls.user,
         )
+        cls.review = Review.objects.create(
+            lesson=cls.lesson,
+            author=cls.user,
+            review="An excellent review",
+        )
 
     def test_lesson_listing(self):
         self.assertEqual(f"{self.lesson.title}", "test")
         self.assertEqual(f"{self.lesson.description}", "text")
-        self.assertEqual(f"{self.lesson.author}", "admin")
+        self.assertEqual(f"{self.lesson.author}", "reviewuser")
 
     def test_lesson_list_view(self):
         response = self.client.get(reverse("lesson_list"))
@@ -36,4 +45,5 @@ class LessonTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(no_response.status_code, 404)
         self.assertContains(response, "test")
+        self.assertContains(response, "An excellent review")
         self.assertTemplateUsed(response, "lessons/lesson_detail.html")
