@@ -3,9 +3,12 @@
 
 {% block content %}
   <div class="lesson-detail">
+    {% if lesson.cover %}
+      <img class="bookcover" src="{{ lesson.cover.url }}" alt="{{ lesson.title }}">
+    {% endif %}
     <h2><a href="">{{ lesson.title }}</a></h2>
     <p>Author: {{ lesson.author }}</p>
-    <p>description: {{ lesson.description }}</p>
+    <p>Description: {{ lesson.description }}</p>
     <div>
       <h3>Reviews</h3>
       <ul>

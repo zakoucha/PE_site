@@ -16,6 +16,7 @@ class Lesson(models.Model):
     file = models.FileField(upload_to="lesson_files/", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    cover = models.ImageField(upload_to="covers/", blank=True, null=True)
 
     def __str__(self):
         return self.title

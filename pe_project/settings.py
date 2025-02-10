@@ -170,3 +170,6 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 SOCIALACCOUNT_ADAPTER = "allauth.socialaccount.adapter.DefaultSocialAccountAdapter"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
