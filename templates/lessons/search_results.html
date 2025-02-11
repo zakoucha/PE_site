@@ -1,0 +1,14 @@
+{% extends "_base.html" %}
+
+{% block title %}Search{% endblock title %}
+
+{% block content %}
+    <h1>Search Results</h1>
+    {% for lesson in lesson_list %}
+        <div>
+            <h3><a href="{{ lesson.get_absolute_url }}">{{ lesson.title }}</a></h3>
+            <p>Author: {{ lesson.author }}</p>
+            <p>Description: $ {{ lesson.description }}</p>
+        </div>
+    {% endfor %}
+{% endblock content %}
