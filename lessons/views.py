@@ -17,6 +17,9 @@ class LessonDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     template_name = "lessons/lesson_detail.html"
     login_url = "account_login"
     permission_required = "lessons.special_status"
+    queryset = Lesson.objects.all().prefetch_related(
+        "reviews__author",
+    )
 
 
 class SearchResultsListView(ListView):
