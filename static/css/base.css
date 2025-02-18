@@ -1,8 +1,22 @@
-body {
-    min-height: 75rem;
-    padding-top: 4.5rem;
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
+.grid-wrapper {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+}
+
+/* Ensures the main content expands to fill available space */
+.main-content {
+    /* If needed, adjust padding-top to account for your fixed navbar height */
+    padding-top: 70px;
+}
+
+/* Your additional styles */
 h1 {
     color: red;
 }
@@ -10,4 +24,12 @@ h1 {
 .bookcover {
     height: 300px;
     width: auto;
+}
+.footer {
+    background-color: #343a40;
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    width: 100%;
+    /* Remove position fixed to let it naturally stay at the bottom */
 }

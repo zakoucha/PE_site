@@ -5,17 +5,33 @@
   <div class="lesson-detail">
     {% if lesson.cover %}
       <img class="bookcover" src="{{ lesson.cover.url }}" alt="{{ lesson.title }}">
+    {% else %}
+      <p>No cover image available.</p>
     {% endif %}
-    <h2><a href="">{{ lesson.title }}</a></h2>
+
+    <h2>{{ lesson.title }}</h2>
     <p>Author: {{ lesson.author }}</p>
     <p>Description: {{ lesson.description }}</p>
+
+    {% if lesson.uploaded_file %}
+      <p>📂 <a href="{% url 'download_lesson_file' lesson.pk %}">Download Lesson File</a></p>
+    {% else %}
+      <p>No files uploaded for this lesson.</p>
+    {% endif %}
+
     <div>
       <h3>Reviews</h3>
       <ul>
         {% for review in lesson.reviews.all %}
-        <li>{{ review.review }} ({{ review.author }})</li>
+          <li>{{ review.review }} ({{ review.author }})</li>
         {% endfor %}
       </ul>
     </div>
+
+    <!-- Edit Lesson Button -->
+    <a href="{% url 'update_lesson' lesson.pk %}" class="btn btn-warning">Edit Lesson</a>
+
+    <!-- Back to Lesson List -->
+    <a href="{% url 'lesson_list' %}" class="btn btn-secondary">Back to Lessons</a>
   </div>
 {% endblock content %}

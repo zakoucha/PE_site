@@ -1,5 +1,5 @@
 import socket
-
+import os
 from pathlib import Path
 
 from environs import Env
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
+    "django_extensions",
 ]
 
 MIDDLEWARE = [
@@ -178,7 +179,7 @@ SOCIALACCOUNT_PROVIDERS = {
 SOCIALACCOUNT_ADAPTER = "allauth.socialaccount.adapter.DefaultSocialAccountAdapter"
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
 INTERNAL_IPS = [ip[:-1] + "1" for ip in ips]
