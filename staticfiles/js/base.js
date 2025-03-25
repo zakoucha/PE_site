@@ -62,3 +62,74 @@ document.addEventListener('DOMContentLoaded', function() {
     // Console greeting
     console.log('%c🏃‍♂️ Physical Education Site Loaded!', 'color: #FF3E41; font-size: 14px;');
 });
+// Enhanced likeReview function
+async function likeReview(reviewId) {
+  const likeBtn = document.querySelector(`button[onclick="likeReview(${reviewId})"]`);
+  const likeIcon = likeBtn.querySelector('.like-icon');
+  const likeCount = likeBtn.querySelector('.like-count');
+
+  // Visual feedback
+  likeBtn.disabled = true;
+  likeIcon.innerHTML = '<i class="fas fa-spinner fa-pulse"></i>';
+
+  try {
+    const response = await fetch(`/lessons/api/reviews/like/${reviewId}/`, {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (!response.ok) throw new Error('Network error');
+
+    const data = await response.json();
+
+    // Update UI
+    likeCount.textContent = data.likes;
+    likeBtn.classList.toggle('liked', data.liked);
+    likeIcon.innerHTML = '<i class="fas fa-thumbs-up"></i>';
+
+    // Celebration effect for new likes
+    if (data.liked) {
+      likeIcon.style.transform = 'scale(1.5)';
+      setTimeout(() => {
+        likeIcon.style.transform = 'scale(1)';
+      }, 300);
+    }
+
+  } catch (error) {
+    console.error('Error:', error);
+    likeIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+    setTimeout(() => {
+      likeIcon.innerHTML = '<i class="fas fa-thumbs-up"></i>';
+    }, 1000);
+  } finally {
+    likeBtn.disabled = false;
+  }
+}
+// Review form interactivity
+document.querySelector('#reviewForm textarea').addEventListener('input', function() {
+  const submitBtn = this.closest('form').querySelector('button[type="submit"]');
+  const charCount = document.getElementById('charCount');
+  const currentLength = this.value.length;
+
+  charCount.textContent = currentLength;
+  submitBtn.disabled = currentLength < 10 || currentLength > 500;
+
+  // Visual feedback
+  if (currentLength > 450) {
+    charCount.classList.add('text-warning');
+  } else {
+    charCount.classList.remove('text-warning');
+  }
+});
+
+// Form submission handler
+document.querySelector('#reviewForm').addEventListener('submit', function(e) {
+  const textarea = this.querySelector('textarea');
+  if (textarea.value.length < 10) {
+    e.preventDefault();
+    textarea.classList.add('is-invalid');
+  }
+});

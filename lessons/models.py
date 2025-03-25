@@ -80,3 +80,18 @@ class Review(models.Model):
 
     def total_likes(self):
         return self.likes.count()
+
+
+class Lesson(models.Model):
+    CATEGORY_CHOICES = [
+        ('sports', 'Sports'),
+        ('fitness', 'Fitness'),
+        ('theory', 'Theory'),
+    ]
+
+    category = models.CharField(
+        max_length=10,
+        choices=CATEGORY_CHOICES,
+        default='theory'
+    )
+    # ... rest of your fields ...

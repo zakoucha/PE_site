@@ -1,19 +1,57 @@
 {% extends "_base.html" %}
-
-{% block title %}Lessons{% endblock title %}
+{% load static %}
 
 {% block content %}
-    <h1>Lessons</h1>
+<div class="container py-4">
+  <!-- Filter Controls -->
+  <div class="filter-controls mb-4">
+    <div class="btn-group" role="group" aria-label="Lesson filters">
+      <button type="button" class="filter-btn active" data-filter="all">All Lessons</button>
+      <button type="button" class="filter-btn" data-filter="sports">Sports</button>
+      <button type="button" class="filter-btn" data-filter="fitness">Fitness</button>
+      <button type="button" class="filter-btn" data-filter="theory">Theory</button>
+    </div>
 
-    <!-- Add New Lesson Button -->
-    <a href="{% url 'add_lesson' %}" class="btn btn-primary">Add New Lesson</a>
+    <div class="search-box mt-3 mt-md-0">
+      <input type="text" class="form-control" id="lessonSearch" placeholder="Search lessons...">
+    </div>
+  </div>
 
+  <!-- Lesson Grid -->
+  <div class="row" id="lessonGrid">
     {% for lesson in lesson_list %}
-        <div class="lesson-card">
-            <h2><a href="{{ lesson.get_absolute_url }}">{{ lesson.title }}</a></h2>
-
-            <!-- Edit Lesson Button -->
-            <a href="{% url 'update_lesson' lesson.pk %}" class="btn btn-warning">Edit</a>
+    <div class="col-md-4 mb-4 lesson-card"
+         data-category="{{ lesson.category|default:'theory'|lower }}"
+         data-title="{{ lesson.title|lower }}"
+         data-author="{{ lesson.author.username|lower }}">
+      <div class="card h-100">
+        {% if lesson.cover %}
+          <img src="{{ lesson.cover.url }}" class="card-img-top" alt="{{ lesson.title }}">
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title">{{ lesson.title }}</h5>
+          <p class="card-text">{{ lesson.description|truncatewords:20 }}</p>
+          <span class="badge bg-secondary">{{ lesson.category|default:"General" }}</span>
         </div>
+        <div class="card-footer bg-transparent">
+          <a href="{% url 'lesson_detail' lesson.pk %}" class="btn btn-sm btn-primary">
+            View Details
+          </a>
+        </div>
+      </div>
+    </div>
     {% endfor %}
-{% endblock content %}
+  </div>
+
+  <!-- Empty State -->
+  <div id="noResults" class="text-center py-5" style="display: none;">
+    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+    <h4>No lessons found</h4>
+    <p>Try adjusting your filters or search term</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/filters.js' %}"></script>
+{% endblock %}
