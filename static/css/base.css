@@ -418,3 +418,65 @@ p {
     margin-bottom: 0;
   }
 }
+/* Like Button Styles */
+.like-btn {
+  background: none;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  border-radius: 50px;
+  padding: 0.25rem 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.like-btn:hover {
+  background: rgba(255, 62, 65, 0.1);
+}
+
+.like-btn.liked {
+  background: var(--primary);
+  color: white;
+}
+
+.like-icon {
+  transition: transform 0.3s ease;
+}
+
+.like-btn.liked .like-icon {
+  transform: scale(1.2);
+}
+
+.like-count {
+  font-weight: 600;
+}
+/* Review Form Styles */
+.review-form {
+  transition: all 0.3s ease;
+}
+
+.review-form:hover {
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+#reviewForm textarea {
+  min-height: 100px;
+  transition: border-color 0.3s;
+}
+
+#reviewForm textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 0.25rem rgba(0, 196, 154, 0.25);
+}
+
+.form-text {
+  opacity: 0.7;
+  font-size: 0.85rem;
+}
+
+.text-warning {
+  color: var(--primary) !important;
+  font-weight: bold;
+}
