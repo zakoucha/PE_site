@@ -50,17 +50,33 @@ class Activity(models.Model):
         return self.name
 
 
-class Review(models.Model):  # new
+class Review(models.Model):
     lesson = models.ForeignKey(
         Lesson,
         on_delete=models.CASCADE,
         related_name="reviews",
     )
-    review = models.CharField(max_length=255)
+    review = (
+        models.TextField()
+    )  # Changed from CharField to TextField for longer reviews
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    parent = models.ForeignKey(
+        "self", null=True, blank=True, on_delete=models.CASCADE, related_name="replies"
+    )
+    likes = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name="liked_reviews", blank=True
+    )
+
+    def is_reply(self):
+        return self.parent is not None
 
     def __str__(self):
-        return self.review
+        return f"{self.author} - {self.review[:20]}"
+
+    def total_likes(self):
+        return self.likes.count()
