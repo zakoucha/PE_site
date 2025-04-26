@@ -1,0 +1,59 @@
+<!-- lessons/plan_result.html -->
+{% extends "_base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2><i class="fas fa-file-alt"></i> Generated Lesson Plan</h2>
+    
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> 
+        Generated at: {{ generated_at|date:"H:i, M d" }}
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-warning">
+            <h3>Warm-up Activity</h3>
+        </div>
+        <div class="card-body">
+            {% if warmup %}
+                <h4>{{ warmup.name }}</h4>
+                <p>{{ warmup.description }}</p>
+                <p class="text-muted">
+                    Duration: {{ warmup.duration }} mins
+                    ({{ warmup.get_intensity_level_display }} intensity)
+                </p>
+            {% else %}
+                <div class="alert alert-danger">
+                    No warmup found! Suggested default:
+                    <strong>5-minute light cardio and stretching</strong>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h3>Main Activities</h3>
+        </div>
+        <div class="card-body">
+            {% if main_activities %}
+                {% for activity in main_activities %}
+                <div class="mb-3 p-3 border rounded">
+                    <h4>{{ activity.name }}</h4>
+                    <p>{{ activity.description }}</p>
+                    <div class="text-muted">
+                        Duration: {{ activity.duration }} mins |
+                        Equipment: {% for eq in activity.equipment_needed.all %}{{ eq.name }}{% if not forloop.last %}, {% endif %}{% empty %}None{% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-danger">
+                    No activities found! Suggested default:
+                    <strong>Free play or skill practice</strong>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

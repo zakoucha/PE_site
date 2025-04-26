@@ -1,0 +1,12 @@
+{% extends '_base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <h2>{% if object %}Delete{% else %}Add{% endif %} Lesson</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-danger">Delete</button>
+  </form>
+  <a href="{% url 'lesson_list' %}" class="btn btn-secondary">Cancel</a>
+{% endblock %}

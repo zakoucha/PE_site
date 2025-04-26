@@ -1,0 +1,36 @@
+{% extends "_base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>
+        <i class="fas fa-{% if type == 'warmup' %}fire{% else %}running{% endif %}"></i>
+        {{ type|title }} Activities
+    </h2>
+    
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for activity in activity_list %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ activity.name }}</h5>
+                    <p class="card-text">{{ activity.description|truncatewords:20 }}</p>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <strong>Duration:</strong> {{ activity.duration }} mins
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Intensity:</strong> {{ activity.get_intensity_level_display }}
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="#" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-plus"></i> Add to Plan
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

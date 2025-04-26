@@ -1,0 +1,46 @@
+{% extends "_base.html" %}
+{% load static %}
+
+{% block title %}Progress Tracker{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2><i class="fas fa-chart-line me-2"></i>Progress Tracker</h2>
+
+    {% if assessments %}
+        <div class="table-responsive mt-4">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Skill</th>
+                        <th>Level</th>
+                        <th>Date</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for assessment in assessments %}
+                    <tr>
+                        <td>{{ assessment.student }}</td>
+                        <td>{{ assessment.get_skill_display }}</td>
+                        <td>{{ assessment.get_score_display }}</td>
+                        <td>{{ assessment.date|date:"M d, Y" }}</td>
+                        <td>{{ assessment.notes|truncatechars:30 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info mt-4">
+            {% if not request.user.profile.school %}
+                You need to be assigned to a school to view progress.
+                <a href="{% url 'profile_update' %}" class="alert-link">Update your profile</a>
+            {% else %}
+                No skill assessments found for your school.
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

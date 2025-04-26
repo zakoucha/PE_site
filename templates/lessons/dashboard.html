@@ -1,0 +1,94 @@
+{% extends "_base.html" %}
+{% load static %}
+
+{% block title %}User Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2><i class="fas fa-tachometer-alt me-2"></i> Dashboard</h2>
+
+    <div class="row mt-4">
+        <!-- Recent Lessons Column -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5><i class="fas fa-book-open me-2"></i>Your Recent Lessons</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_lessons %}
+                        <div class="list-group">
+                            {% for lesson in recent_lessons %}
+                            <a href="{{ lesson.get_absolute_url }}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ lesson.title }}</h6>
+                                    <small class="text-muted">{{ lesson.created_at|date:"M d, Y" }}</small>
+                                </div>
+                                <p class="mb-1">{{ lesson.description|truncatewords:15 }}</p>
+                                <small>Grade {{ lesson.grade_level }}</small>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            You haven't created any lessons yet.
+                            <a href="{% url 'add_lesson' %}" class="alert-link">Create your first lesson</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Activities and Equipment Column -->
+        <div class="col-md-6">
+            <!-- Recent Activities -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5><i class="fas fa-running me-2"></i>Recent Activities</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_activities %}
+                        <ul class="list-group">
+                            {% for activity in recent_activities %}
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <strong>{{ activity.name }}</strong>
+                                    <span class="badge bg-{% if activity.intensity_level == 'high' %}danger{% elif activity.intensity_level == 'moderate' %}warning{% else %}success{% endif %}">
+                                        {{ activity.get_intensity_level_display }}
+                                    </span>
+                                </div>
+                                <small class="text-muted">{{ activity.duration }} min</small>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">No recent activities found.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Equipment Summary -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5><i class="fas fa-basketball-ball me-2"></i>Equipment Summary</h5>
+                </div>
+                <div class="card-body">
+                    {% if equipment_count > 0 %}
+                        <p>Your school has <strong>{{ equipment_count }}</strong> equipment items registered.</p>
+                        <a href="{% url 'equipment_list' %}" class="btn btn-sm btn-outline-success">
+                            <i class="fas fa-clipboard-list me-1"></i>View Equipment
+                        </a>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            {% if not request.user.profile.school %}
+                                You need to be assigned to a school to view equipment.
+                            {% else %}
+                                No equipment registered for your school yet.
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

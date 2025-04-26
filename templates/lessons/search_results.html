@@ -1,0 +1,22 @@
+{% extends "_base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Search Results</h2>
+
+    {% if lesson_list %}
+        <div class="list-group">
+            {% for lesson in lesson_list %}
+            <a href="{{ lesson.get_absolute_url }}" class="list-group-item list-group-item-action">
+                <h5>{{ lesson.title }}</h5>
+                <p class="mb-1">{{ lesson.description|truncatewords:30 }}</p>
+            </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            No lessons found matching your search.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

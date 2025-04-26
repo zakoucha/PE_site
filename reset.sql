@@ -1,0 +1,13 @@
+BEGIN;
+SELECT setval(pg_get_serial_sequence('"lessons_profile"','id'), coalesce(max("id"), 1), max("id") IS NOT null) FROM "lessons_profile";
+SELECT setval(pg_get_serial_sequence('"lessons_lesson_equipment_needed"','id'), coalesce(max("id"), 1), max("id") IS NOT null) FROM "lessons_lesson_equipment_needed";
+SELECT setval(pg_get_serial_sequence('"lessons_equipment"','id'), coalesce(max("id"), 1), max("id") IS NOT null) FROM "lessons_equipment";
+SELECT setval(pg_get_serial_sequence('"lessons_school"','id'), coalesce(max("id"), 1), max("id") IS NOT null) FROM "lessons_school";
+SELECT setval(pg_get_serial_sequence('"lessons_activity_equipment_needed"','id'), coalesce(max("id"), 1), max("id") IS NOT null) FROM "lessons_activity_equipment_needed";
+SELECT setval(pg_get_serial_sequence('"lessons_activity"','id'), coalesce(max("id"), 1), max("id") IS NOT null) FROM "lessons_activity";
+SELECT setval(pg_get_serial_sequence('"lessons_skillassessment"','id'), coalesce(max("id"), 1), max("id") IS NOT null) FROM "lessons_skillassessment";
+SELECT setval(pg_get_serial_sequence('"lessons_student"','id'), coalesce(max("id"), 1), max("id") IS NOT null) FROM "lessons_student";
+SELECT setval(pg_get_serial_sequence('"lessons_safetyrule"','id'), coalesce(max("id"), 1), max("id") IS NOT null) FROM "lessons_safetyrule";
+SELECT setval(pg_get_serial_sequence('"lessons_review_likes"','id'), coalesce(max("id"), 1), max("id") IS NOT null) FROM "lessons_review_likes";
+SELECT setval(pg_get_serial_sequence('"lessons_review"','id'), coalesce(max("id"), 1), max("id") IS NOT null) FROM "lessons_review";
+COMMIT;

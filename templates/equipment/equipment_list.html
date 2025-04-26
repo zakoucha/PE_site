@@ -1,0 +1,52 @@
+{% extends "_base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2><i class="fas fa-basketball-ball"></i> Equipment Inventory</h2>
+    <a href="{% url 'equipment_add' %}" class="btn btn-success mb-3">
+        <i class="fas fa-plus"></i> Add Equipment
+    </a>
+    
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                    <th>Location</th>
+                    <th>Condition</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in equipment %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.storage_location }}</td>
+                    <td>{{ item.get_condition_display }}</td>
+                    <td>
+                        <a href="{% url 'equipment_edit' item.pk %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                    </td>
+                </tr>
+                <td>
+                    <a href="{% url 'equipment_edit' item.pk %}"
+                       class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    {% if item.author == request.user %}
+                    <a href="{% url 'equipment_delete' item.pk %}"
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Delete {{ item.name }} permanently?')">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </a>
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
