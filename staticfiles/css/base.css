@@ -416,10 +416,13 @@ p {
   .action-buttons .btn:last-child {
     margin-bottom: 0;
   }
+<<<<<<< HEAD
 }
 select#id_school {
     width: 100%;
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;
+=======
+>>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
 }

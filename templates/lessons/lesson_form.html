@@ -1,12 +1,20 @@
 {% extends '_base.html' %}
+<<<<<<< HEAD
 {% load crispy_forms_tags %}
 
+=======
+>>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
 {% block content %}
   <h2>{% if object %}Edit{% else %}Add{% endif %} Lesson</h2>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
+<<<<<<< HEAD
     {{ form|crispy }}
     <button type="submit" class="btn btn-primary">Save</button>
+=======
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Save</button>
+>>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
   </form>
   <a href="{% url 'lesson_list' %}" class="btn btn-secondary">Cancel</a>
 {% endblock %}

@@ -1,4 +1,5 @@
 from django import forms
+<<<<<<< HEAD
 from .models import (
     Lesson,
     Review,
@@ -67,19 +68,32 @@ class LessonForm(forms.ModelForm):
             "age_group": forms.Select(choices=Lesson.AGE_GROUP_CHOICES),
             "equipment_needed": forms.CheckboxSelectMultiple,
         }
+=======
+from .models import Lesson, Review
+
+
+class LessonForm(forms.ModelForm):
+    class Meta:
+        model = Lesson
+        fields = ["title", "description", "file", "cover"]  # Fields relevant to Lesson
+>>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
 
 
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
         fields = ["review"]
+<<<<<<< HEAD
         widgets = {"review": forms.Textarea(attrs={"rows": 3})}
+=======
+>>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
 
 
 class ReplyForm(forms.ModelForm):
     class Meta:
         model = Review
         fields = ["review"]
+<<<<<<< HEAD
         widgets = {"review": forms.Textarea(attrs={"rows": 2})}
 
 
@@ -171,3 +185,5 @@ class SafetyRuleForm(forms.ModelForm):
     class Meta:
         model = SafetyRule
         fields = ["title", "description", "category", "reference"]
+=======
+>>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d

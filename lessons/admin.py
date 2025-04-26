@@ -1,4 +1,5 @@
 from django.contrib import admin
+<<<<<<< HEAD
 from .models import Lesson, Activity, Review, Profile, SafetyRule
 
 from django.contrib import admin
@@ -73,6 +74,9 @@ class SafetyRuleAdmin(admin.ModelAdmin):
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ("user", "school")
     search_fields = ("user__email", "school__name")
+=======
+from .models import Lesson, Activity, Review
+>>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
 
 
 class ActivityInline(admin.TabularInline):

@@ -1,4 +1,5 @@
 {% extends "_base.html" %}
+<<<<<<< HEAD
 {% load static %}
 
 {% block title %}Lessons Management{% endblock title %}
@@ -123,3 +124,23 @@
     }
 </style>
 {% endblock content %}
+=======
+
+{% block title %}Lessons{% endblock title %}
+
+{% block content %}
+    <h1>Lessons</h1>
+
+    <!-- Add New Lesson Button -->
+    <a href="{% url 'add_lesson' %}" class="btn btn-primary">Add New Lesson</a>
+
+    {% for lesson in lesson_list %}
+        <div class="lesson-card">
+            <h2><a href="{{ lesson.get_absolute_url }}">{{ lesson.title }}</a></h2>
+
+            <!-- Edit Lesson Button -->
+            <a href="{% url 'update_lesson' lesson.pk %}" class="btn btn-warning">Edit</a>
+        </div>
+    {% endfor %}
+{% endblock content %}
+>>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d

@@ -1,5 +1,6 @@
 {% extends "_base.html" %}
 
+<<<<<<< HEAD
 {% block content %}
 <div class="container">
     <h2>Search Results</h2>
@@ -20,3 +21,17 @@
     {% endif %}
 </div>
 {% endblock %}
+=======
+{% block title %}Search{% endblock title %}
+
+{% block content %}
+    <h1>Search Results</h1>
+    {% for lesson in lesson_list %}
+        <div>
+            <h3><a href="{{ lesson.get_absolute_url }}">{{ lesson.title }}</a></h3>
+            <p>Author: {{ lesson.author }}</p>
+            <p>Description: $ {{ lesson.description }}</p>
+        </div>
+    {% endfor %}
+{% endblock content %}
+>>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d

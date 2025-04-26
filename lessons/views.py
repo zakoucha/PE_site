@@ -1,4 +1,5 @@
 import os
+<<<<<<< HEAD
 
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
@@ -8,20 +9,33 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Q, Count
+=======
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.db.models import Q
+>>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import FileResponse, HttpResponse, JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+<<<<<<< HEAD
 from django.urls import reverse_lazy, reverse
 from django.contrib import messages
 from django.views import View
 from .models import SkillAssessment
+=======
+from django.urls import reverse_lazy
+from django.contrib import messages
+from django.views import View
+>>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
 from django.views.generic import (
     ListView,
     DetailView,
     TemplateView,
     CreateView,
     UpdateView,
+<<<<<<< HEAD
     FormView,
     DeleteView,
 )
@@ -59,6 +73,11 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
         kwargs = super().get_form_kwargs()
         kwargs["initial"] = {"school": self.object.school}
         return kwargs
+=======
+)
+from .models import Lesson, Review
+from .forms import LessonForm, ReviewForm, ReplyForm
+>>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
 
 
 class LessonCreateView(CreateView):
@@ -68,6 +87,7 @@ class LessonCreateView(CreateView):
     success_url = reverse_lazy("lesson_list")
 
     def form_valid(self, form):
+<<<<<<< HEAD
         # First save the lesson instance without M2M
         lesson = form.save(commit=False)
         lesson.author = self.request.user
@@ -116,6 +136,18 @@ class LessonDeleteView(DeleteView):
     model = Lesson
     template_name = "lessons/lesson_delete.html"
     success_url = reverse_lazy("lesson_list")
+=======
+        lesson = form.save(commit=False)
+        lesson.author = self.request.user  # Set the author to the current user
+        lesson.save()
+        messages.success(self.request, "Lesson added successfully!")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print("Form errors:", form.errors)
+        messages.error(self.request, "Error adding lesson. Please check the form.")
+        return super().form_invalid(form)
+>>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
 
 
 class LessonUpdateView(UpdateView):
@@ -125,14 +157,46 @@ class LessonUpdateView(UpdateView):
     success_url = reverse_lazy("lesson_list")
 
     def form_valid(self, form):
+<<<<<<< HEAD
         messages.success(self.request, "Lesson updated successfully!")
         return super().form_valid(form)
 
+=======
+        lesson = form.save(commit=False)
+        lesson.author = self.object.author  # Keep the existing author
+        lesson.save()
+        messages.success(self.request, "Lesson updated successfully!")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print("Form errors:", form.errors)
+        messages.error(self.request, "Error updating lesson. Please check the form.")
+        return super().form_invalid(form)
+
+
+def lesson_download_file(request, pk):
+    lesson = get_object_or_404(Lesson, pk=pk)
+
+    if lesson.file:
+        file_path = lesson.file.path
+        file_name = os.path.basename(file_path)
+
+        # Force content type to application/octet-stream
+        response = FileResponse(open(file_path, "rb"), as_attachment=True)
+        response["Content-Type"] = "application/octet-stream"
+        response["Content-Disposition"] = f'attachment; filename="{file_name}"'
+
+        return response
+
+    return HttpResponse("No file available for download.", status=404)
+
+>>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
 
 class LessonListView(LoginRequiredMixin, ListView):
     model = Lesson
     context_object_name = "lesson_list"
     template_name = "lessons/lesson_list.html"
+<<<<<<< HEAD
     paginate_by = 10
 
     def get_queryset(self):
@@ -143,17 +207,28 @@ class LessonListView(LoginRequiredMixin, ListView):
                 | Q(description__icontains=self.request.GET["q"])
             )
         return queryset.annotate(like_count=Count("reviews__likes"))
+=======
+    login_url = "account_login"
+>>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
 
 
 class LessonDetailView(LoginRequiredMixin, DetailView):
     model = Lesson
+<<<<<<< HEAD
     template_name = "lessons/lesson_detail.html"
+=======
+    context_object_name = "lesson"
+    template_name = "lessons/lesson_detail.html"
+    login_url = "account_login"
+    permission_required = "lessons.special_status"
+>>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
     queryset = Lesson.objects.all().prefetch_related("reviews__author")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["review_form"] = ReviewForm()
         context["reply_form"] = ReplyForm()
+<<<<<<< HEAD
         context["related_activities"] = Activity.objects.filter(
             grade_level=self.object.grade_level
         )[:3]
@@ -411,6 +486,11 @@ class LikeReviewAPIView(APIView):
         return Response({"likes": review.total_likes(), "liked": liked})
 
 
+=======
+        return context
+
+
+>>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
 class SearchResultsListView(ListView):
     model = Lesson
     context_object_name = "lesson_list"
@@ -418,6 +498,7 @@ class SearchResultsListView(ListView):
 
     def get_queryset(self):
         query = self.request.GET.get("q")
+<<<<<<< HEAD
         return Lesson.objects.filter(
             Q(title__icontains=query)
             | Q(description__icontains=query)
@@ -445,6 +526,48 @@ class LessonPlanResultView(LoginRequiredMixin, TemplateView):
         return context
 
 
+=======
+        return Lesson.objects.filter(Q(title__icontains=query))
+
+
+class UserDashboardView(LoginRequiredMixin, TemplateView):
+    template_name = "lessons/dashboard.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["lessons"] = Lesson.objects.filter(author=self.request.user)
+        return context
+
+
+class ReviewCreateView(CreateView):
+    model = Review
+    form_class = ReviewForm
+    template_name = "lessons/add_review.html"
+
+    def form_valid(self, form):
+        review = form.save(commit=False)
+        review.author = self.request.user
+        review.lesson = get_object_or_404(Lesson, pk=self.kwargs["pk"])
+        review.save()
+        messages.success(self.request, "Review added successfully!")
+        return redirect("lesson_detail", pk=self.kwargs["pk"])
+
+
+class LikeReviewAPIView(LoginRequiredMixin, APIView):
+    def post(self, request, review_id, *args, **kwargs):
+        review = get_object_or_404(Review, id=review_id)
+        if request.user in review.likes.all():
+            review.likes.remove(request.user)  # Unlike
+            liked = False
+        else:
+            review.likes.add(request.user)  # Like
+            liked = True
+        return Response(
+            {"likes": review.total_likes(), "liked": liked}, status=status.HTTP_200_OK
+        )
+
+
+>>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
 @login_required
 def reply_review(request, review_id):
     review = get_object_or_404(Review, id=review_id)
@@ -453,8 +576,20 @@ def reply_review(request, review_id):
         if form.is_valid():
             reply = form.save(commit=False)
             reply.author = request.user
+<<<<<<< HEAD
             reply.lesson = review.lesson
             reply.parent = review
             reply.save()
             messages.success(request, "Reply added!")
+=======
+            reply.lesson = (
+                review.lesson
+            )  # Ensure the reply is linked to the correct lesson
+            reply.parent = review  # Correctly links reply to the parent review
+            reply.save()
+            print("Reply saved successfully!")
+            messages.success(request, "Reply added successfully!")
+        else:
+            print("Form errors:", form.errors)
+>>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
     return redirect("lesson_detail", pk=review.lesson.pk)

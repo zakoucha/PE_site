@@ -44,6 +44,10 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
     "django_extensions",
+<<<<<<< HEAD
+=======
+    "rest_framework",
+>>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
 ]
 
 MIDDLEWARE = [
@@ -86,6 +90,7 @@ WSGI_APPLICATION = "pe_project.wsgi.application"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
+<<<<<<< HEAD
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "postgres",
@@ -94,6 +99,9 @@ DATABASES = {
         "HOST": "db",
         "PORT": "5432",
     }
+=======
+    "default": env.dj_db_url("DATABASE_URL", default="postgres://postgres@db/postgres")
+>>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
 }
 
 
@@ -160,7 +168,11 @@ EMAIL_HOST = "smtp-relay.brevo.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "7a5ed6003@smtp-brevo.com"
+<<<<<<< HEAD
 EMAIL_HOST_PASSWORD = "0FEtk1VmW8QZX64c"
+=======
+EMAIL_HOST_PASSWORD = "xsmtpsib-fa8beede8d4b589ec6c4c3a14e6dce7e76d4e9dc9cdc1eb6285289e1afc23e40-hTKm54fycJMkRqn3"  # Replace with your SMTP password
+>>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
 DEFAULT_FROM_EMAIL = "boutique.elegant32@gmail.com"
 
 ACCOUNT_SESSION_REMEMBER = True
