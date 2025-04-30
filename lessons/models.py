@@ -2,7 +2,6 @@ import uuid
 from django.db import models
 from django.conf import settings
 from django.urls import reverse
-<<<<<<< HEAD
 from django.contrib.postgres.fields import ArrayField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -37,23 +36,12 @@ class Lesson(models.Model):
         ("teen", "Teen (13-19)"),
         ("adult", "Adult (20+)"),
     ]
-    GRADE_LEVELS = [(i, f"Grade {i}") for i in range(1, 7)]
+    GRADE_LEVELS = [(i, f"Grade {i}") for i in range(1, 6)]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=255)
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="lessons"
-=======
-
-
-class Lesson(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    title = models.CharField(max_length=255)
-    author = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        default=1,
->>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
     )
     description = models.TextField()
     file = models.FileField(upload_to="lesson_files/", blank=True, null=True)
@@ -61,7 +49,6 @@ class Lesson(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     cover = models.ImageField(upload_to="covers/", blank=True, null=True)
 
-<<<<<<< HEAD
     # PE-Specific Fields
     activity_type = models.CharField(
         max_length=20, choices=ACTIVITY_TYPES, default="main"
@@ -78,7 +65,7 @@ class Lesson(models.Model):
         help_text="Learning objectives",
     )
     equipment_needed = models.ManyToManyField(
-        "Equipment", blank=True, related_name="lessons"  # Allows empty in forms
+        "Equipment", blank=True, related_name="lessons"
     )
 
     class Meta:
@@ -94,25 +81,55 @@ class Lesson(models.Model):
 
     def __str__(self):
         return f"{self.title} (Grade {self.grade_level})"
-=======
-    class Meta:
-        indexes = [
-            models.Index(fields=["id"], name="id_index"),
-        ]
-
-        permissions = [
-            ("special_status", "Can read all books"),
-        ]
-
-    def __str__(self):
-        return self.title
->>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
 
     def get_absolute_url(self):
         return reverse("lesson_detail", kwargs={"pk": self.pk})
 
 
-<<<<<<< HEAD
+class CurriculumDocument(models.Model):
+    DOCUMENT_TYPES = [
+        ("session_sheet", "Session Sheet"),
+        ("annual_program", "Annual Program"),
+        ("annual_distribution", "Annual Distribution"),
+        ("trimester_clip", "Trimester Clip"),
+        ("curriculum", "Physical Education Curriculum"),
+    ]
+
+    GRADE_CHOICES = [(i, f"Grade {i}") for i in range(1, 6)]
+    TRIMESTER_CHOICES = [(1, "First"), (2, "Second"), (3, "Third")]
+    version = models.PositiveIntegerField(default=1)
+    previous_version = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="next_versions",
+    )
+    is_current = models.BooleanField(default=True)
+    changelog = models.TextField(
+        blank=True, help_text="Describe changes from previous version"
+    )
+    grade = models.IntegerField(choices=GRADE_CHOICES)
+    document_type = models.CharField(max_length=20, choices=DOCUMENT_TYPES)
+    trimester = models.IntegerField(choices=TRIMESTER_CHOICES, null=True, blank=True)
+    academic_year = models.CharField(max_length=9)  # Format: 2023-2024
+    title = models.CharField(max_length=200)
+    file = models.FileField(upload_to="curriculum_documents/")
+    upload_date = models.DateTimeField(auto_now_add=True)
+    uploaded_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='uploaded_documents'
+    )
+    class Meta:
+        ordering = ["grade", "document_type", "-version"]
+        unique_together = [("grade", "document_type", "academic_year", "version")]
+
+    def __str__(self):
+        return f"{self.get_grade_display()} - {self.get_document_type_display()} ({self.academic_year})"
+
+
 class Equipment(models.Model):
     CONDITION_CHOICES = [
         ("excellent", "Excellent"),
@@ -144,25 +161,11 @@ class Equipment(models.Model):
 class School(models.Model):
     name = models.CharField(max_length=200)
     address = models.TextField()
-=======
-class Activity(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField()
-    duration = models.IntegerField(help_text="Duration in minutes")
-    intensity_level = models.CharField(
-        max_length=20,
-        choices=[("Low", "Low"), ("Moderate", "Moderate"), ("High", "High")],
-    )
-    lesson = models.ForeignKey(
-        "Lesson", on_delete=models.CASCADE, related_name="activities"
-    )
->>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
 
     def __str__(self):
         return self.name
 
 
-<<<<<<< HEAD
 class Activity(models.Model):
     INTENSITY_LEVELS = [("low", "Low"), ("moderate", "Moderate"), ("high", "High")]
     ACTIVITY_TYPES = [
@@ -256,31 +259,17 @@ class SafetyRule(models.Model):
         return self.title
 
 
-=======
->>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
 class Review(models.Model):
     lesson = models.ForeignKey(
         Lesson,
         on_delete=models.CASCADE,
         related_name="reviews",
     )
-<<<<<<< HEAD
     review = models.TextField()
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reviews"
     )
     created_at = models.DateTimeField(auto_now_add=True)
-=======
-    review = (
-        models.TextField()
-    )  # Changed from CharField to TextField for longer reviews
-    author = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-
->>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
     parent = models.ForeignKey(
         "self", null=True, blank=True, on_delete=models.CASCADE, related_name="replies"
     )
@@ -288,12 +277,9 @@ class Review(models.Model):
         settings.AUTH_USER_MODEL, related_name="liked_reviews", blank=True
     )
 
-<<<<<<< HEAD
     class Meta:
         ordering = ["-created_at"]
 
-=======
->>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
     def is_reply(self):
         return self.parent is not None
 
@@ -302,7 +288,6 @@ class Review(models.Model):
 
     def total_likes(self):
         return self.likes.count()
-<<<<<<< HEAD
 
 
 @receiver(post_save, sender=get_user_model())
@@ -315,5 +300,3 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
     if hasattr(instance, "profile"):
         instance.profile.save()
-=======
->>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d

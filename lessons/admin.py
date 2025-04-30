@@ -1,10 +1,6 @@
 from django.contrib import admin
-<<<<<<< HEAD
-from .models import Lesson, Activity, Review, Profile, SafetyRule
-
-from django.contrib import admin
 from django.utils.html import format_html
-from .models import SafetyRule
+from .models import Lesson, Activity, Review, Profile, SafetyRule, CurriculumDocument
 
 
 @admin.register(SafetyRule)
@@ -74,19 +70,17 @@ class SafetyRuleAdmin(admin.ModelAdmin):
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ("user", "school")
     search_fields = ("user__email", "school__name")
-=======
-from .models import Lesson, Activity, Review
->>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
 
 
 class ActivityInline(admin.TabularInline):
-    model = Activity  # Corrected model
+    model = Activity
 
 
-class ReviewInline(admin.TabularInline):  # Added inheritance from admin.TabularInline
+class ReviewInline(admin.TabularInline):
     model = Review
 
 
+@admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
     list_display = (
         "title",
@@ -115,4 +109,40 @@ class ActivityAdmin(admin.ModelAdmin):
     )
 
 
-admin.site.register(Lesson, LessonAdmin)
+@admin.register(CurriculumDocument)
+class CurriculumDocumentAdmin(admin.ModelAdmin):
+    # ... (existing admin config) ...
+    list_display = (
+        "title",
+        "grade",
+        "document_type",
+        "version",
+        "is_current",
+        "academic_year",
+    )
+    actions = ["make_current_version"]
+
+    def make_current_version(self, request, queryset):
+        if queryset.count() != 1:
+            self.message_user(
+                request,
+                "Please select exactly one document to make current",
+                level="ERROR",
+            )
+            return
+
+        document = queryset.first()
+        # Set all other versions of this document as not current
+        CurriculumDocument.objects.filter(
+            grade=document.grade,
+            document_type=document.document_type,
+            academic_year=document.academic_year,
+        ).update(is_current=False)
+
+        document.is_current = True
+        document.save()
+        self.message_user(
+            request, f"Version {document.version} is now the current version"
+        )
+
+    make_current_version.short_description = "Mark selected version as current"

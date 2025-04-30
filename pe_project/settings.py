@@ -44,10 +44,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
     "django_extensions",
-<<<<<<< HEAD
-=======
     "rest_framework",
->>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
 ]
 
 MIDDLEWARE = [
@@ -60,7 +57,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
-    "django.middleware.common.CommonMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.cache.FetchFromCacheMiddleware",
 ]
@@ -90,18 +86,9 @@ WSGI_APPLICATION = "pe_project.wsgi.application"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-<<<<<<< HEAD
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
-        "USER": "postgres",
-        "PASSWORD": "postgres",
-        "HOST": "db",
-        "PORT": "5432",
-    }
-=======
-    "default": env.dj_db_url("DATABASE_URL", default="postgres://postgres@db/postgres")
->>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
+    "default": env.dj_db_url(
+        "DATABASE_URL", default="postgres://postgres:postgres@db:5432/postgres"
+    )
 }
 
 
@@ -143,6 +130,7 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -161,24 +149,19 @@ AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 )
-# settings.py
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp-relay.brevo.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "7a5ed6003@smtp-brevo.com"
-<<<<<<< HEAD
-EMAIL_HOST_PASSWORD = "0FEtk1VmW8QZX64c"
-=======
-EMAIL_HOST_PASSWORD = "xsmtpsib-fa8beede8d4b589ec6c4c3a14e6dce7e76d4e9dc9cdc1eb6285289e1afc23e40-hTKm54fycJMkRqn3"  # Replace with your SMTP password
->>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d
+EMAIL_HOST_PASSWORD = "0FEtk1VmW8QZX64c"  # Removed duplicate entry
 DEFAULT_FROM_EMAIL = "boutique.elegant32@gmail.com"
 
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_LOGIN_METHODS = {"email"}
+ACCOUNT_LOGIN_METHOD = "email"  # Fixed setting name
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
@@ -195,13 +178,12 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-SOCIALACCOUNT_ADAPTER = "allauth.socialaccount.adapter.DefaultSocialAccountAdapter"
-
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
+# Debug toolbar configuration
 hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
-INTERNAL_IPS = [ip[:-1] + "1" for ip in ips]
+INTERNAL_IPS = [ip[:-1] + "1" for ip in ips] + ["127.0.0.1"]  # Added explicit localhost
 
 CACHE_MIDDLEWARE_ALIAS = "default"
 CACHE_MIDDLEWARE_SECONDS = 604800

@@ -1,5 +1,4 @@
 {% extends "_base.html" %}
-<<<<<<< HEAD
 {% load static %}
 
 {% block title %}Lessons Management{% endblock title %}
@@ -124,11 +123,8 @@
     }
 </style>
 {% endblock content %}
-=======
 
-{% block title %}Lessons{% endblock title %}
 
-{% block content %}
     <h1>Lessons</h1>
 
     <!-- Add New Lesson Button -->
@@ -142,5 +138,3 @@
             <a href="{% url 'update_lesson' lesson.pk %}" class="btn btn-warning">Edit</a>
         </div>
     {% endfor %}
-{% endblock content %}
->>>>>>> 9c97bf9818e1437bed5150c0305042617a87cd4d

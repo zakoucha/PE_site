@@ -1,0 +1,19 @@
+{% extends "_base.html" %}
+{% block content %}
+<div class="document-browser">
+    <h2>Grade {{ selected_grade }} Documents - {{ selected_type|title }}</h2>
+    <div class="document-grid">
+        {% for doc in documents %}
+        <div class="document-card">
+            <div class="document-version">
+                Version {{ doc.version }}
+                {% if doc.is_current %}<span class="badge bg-success">Current</span>{% endif %}
+                <a href="{% url 'document_version_history' pk=doc.pk %}" class="btn btn-sm btn-outline-secondary">
+                    <i class="fas fa-history"></i> History
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

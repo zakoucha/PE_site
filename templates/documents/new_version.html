@@ -1,0 +1,15 @@
+{% extends "_base.html" %}
+{% block content %}
+<div class="new-version">
+    <h2>Create New Version of {{ object.title }}</h2>
+    <p>Current version: {{ object.version }}</p>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Create Version {{ object.version|add:1 }}
+        </button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "_base.html" %}
+{% block content %}
+<div class="version-history">
+    <h2>Version History for {{ versions.0.title }}</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Version</th>
+                <th>Date</th>
+                <th>Current</th>
+                <th>Changelog</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for version in versions %}
+            <tr class="{% if version.is_current %}table-success{% endif %}">
+                <td>{{ version.version }}</td>
+                <td>{{ version.upload_date|date:"Y-m-d" }}</td>
+                <td>{% if version.is_current %}<i class="fas fa-check"></i>{% endif %}</td>
+                <td>{{ version.changelog|default:"No changelog" }}</td>
+                <td>
+                    <a href="{% url 'download_curriculum' pk=version.pk %}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-download"></i> Download
+                    </a>
+                    {% if not version.is_current %}
+                    <a href="{% url 'create_new_version' pk=version.pk %}" class="btn btn-sm btn-secondary">
+                        <i class="fas fa-code-branch"></i> New Version
+                    </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'grade_documents' grade=versions.0.grade doc_type=versions.0.document_type %}" class="btn btn-outline-primary">
+        Back to Documents
+    </a>
+</div>
+{% endblock %}
