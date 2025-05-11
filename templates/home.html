@@ -1,33 +1,107 @@
 {% extends "_base.html" %}
 {% load static %}
+{% load crispy_forms_tags %}
 
-{% block title %}Home{% endblock title %}
+{% block title %}Home - Physical Education Portal{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-lg-8 text-center">
-      <h1 class="display-4 mb-4">Physical Education</h1>
+<!-- Hero Banner -->
+<section class="hero-section" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('{% static 'images/sports_kids.jpg' %}'); background-size: cover; background-position: center; color: white; padding: 120px 0; text-align: center;">
+  <div class="container">
+    <h1 class="display-4 fw-bold mb-3">Jump into Fun with PE!</h1>
+    <p class="lead mb-4">Exciting Physical Education for Primary School Kids</p>
+    <a href="{% url 'plan_generator' %}" class="btn btn-primary btn-lg"><i class="fas fa-plus-circle me-2"></i>Create a Lesson Plan</a>
+  </div>
+</section>
 
-      <div class="card shadow-sm mb-4">
-        <div class="card-body">
-          <h2 class="h4">Dashboard</h2>
-          <h2 class="h4">Lessons</h2>
+<!-- Welcome Section -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="section-title text-center mb-4">Welcome to Our PE Portal</h2>
+    <p class="text-center lead">Our Physical Education program inspires kids to stay active, learn new skills, and have fun through engaging sports and activities designed for primary school students.</p>
+  </div>
+</section>
+
+<!-- Featured Activities -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="section-title text-center mb-4">Featured Activities</h2>
+    <div class="row">
+      {% for activity in activities %}
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+          <img src="{% static 'images/placeholder.jpg' %}" class="card-img-top" alt="{{ activity.name }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ activity.name }}</h5>
+            <p class="card-text">{{ activity.description|truncatewords:20 }}</p>
+            <a href="{% url 'activity_bank' activity.activity_type %}" class="btn btn-outline-primary">Explore More</a>
+          </div>
         </div>
       </div>
+      {% empty %}
+      <p class="text-center">No activities available yet. Check back soon!</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
 
-      <div class="card shadow-sm mb-4">
-        <div class="card-body">
-          <h3 class="h5">Join Group Classes</h3>
-          <p class="text-muted">Fun and motivating sessions</p>
-          <button class="btn btn-primary">View Schedule</button>
-        </div>
-      </div>
+<!-- Quick Actions -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="section-title text-center mb-4">Quick Actions</h2>
+    <div class="actions-grid">
+      <a href="{% url 'plan_generator' %}" class="action-card">
+        <i class="fas fa-magic action-icon"></i>
+        <h4>Lesson Plan Generator</h4>
+        <p>Create custom PE lesson plans</p>
+      </a>
+      <a href="{% url 'upload_document' %}" class="action-card">
+        <i class="fas fa-upload action-icon"></i>
+        <h4>Upload Documents</h4>
+        <p>Share teaching materials</p>
+      </a>
+      <a href="{% url 'activity_bank' 'warmup' %}" class="action-card">
+        <i class="fas fa-clipboard-list action-icon"></i>
+        <h4>Activity Bank</h4>
+        <p>Browse fun activities</p>
+      </a>
+      <a href="{% url 'equipment_list' %}" class="action-card">
+        <i class="fas fa-basketball-ball action-icon"></i>
+        <h4>Equipment Inventory</h4>
+        <p>Manage PE gear</p>
+      </a>
+    </div>
+  </div>
+</section>
 
-      <div class="alert alert-info mt-4">
-        <p class="mb-0">You are logged in as: <strong>{{ user.username }}</strong></p>
+<!-- Contact Form -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="section-title text-center mb-4">Get in Touch</h2>
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <form method="post" action="{% url 'contact' %}">
+          {% csrf_token %}
+          {{ form|crispy }}
+          <button type="submit" class="btn btn-primary w-100">Send Message</button>
+        </form>
       </div>
     </div>
   </div>
-</div>
-{% endblock content %}
+</section>
+
+<style>
+.hero-section h1 {
+  font-family: 'Poppins', sans-serif;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+.card:hover {
+  transform: translateY(-5px);
+  transition: transform 0.3s ease;
+}
+.section-title {
+  font-family: 'Poppins', sans-serif;
+  color: var(--secondary);
+}
+</style>
+{% endblock %}

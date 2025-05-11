@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     // =============================================
-    // Theme Toggle Functionality
+    // Theme Toggling
     // =============================================
     const themeToggle = document.getElementById('themeToggle');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    themeToggle.addEventListener('click', toggleTheme);
+    themeToggle?.addEventListener('click', toggleTheme);
     prefersDark.addListener(e => {
         if (!localStorage.getItem('theme')) {
             applyTheme(e.matches);
@@ -39,29 +39,27 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // =============================================
-    // Dropdown Menu Fixes
+    // Dropdown Menu Handling
     // =============================================
     function setupDropdowns() {
-        // Initialize all dropdowns
-        var dropdownElements = [].slice.call(document.querySelectorAll('[data-bs-toggle="dropdown"]'));
-        dropdownElements.forEach(function (dropdownToggleEl) {
-            new bootstrap.Dropdown(dropdownToggleEl);
-        });
+        // Initialize Bootstrap dropdowns
+        const dropdowns = document.querySelectorAll('[data-bs-toggle="dropdown"]');
+        dropdowns.forEach(dropdown => new bootstrap.Dropdown(dropdown));
 
-        // Handle submenu behavior
-        document.querySelectorAll('.dropdown-submenu').forEach(function(el) {
+        // Submenu handling
+        document.querySelectorAll('.dropdown-submenu').forEach(el => {
             const toggle = el.querySelector('.dropdown-toggle');
             const menu = el.querySelector('.dropdown-menu');
 
-            // Click handler for mobile
-            toggle.addEventListener('click', function(e) {
+            // Mobile click handling
+            toggle?.addEventListener('click', (e) => {
                 if (window.innerWidth <= 991) {
                     e.preventDefault();
                     e.stopPropagation();
                     menu.classList.toggle('show');
 
-                    // Close other open submenus
-                    document.querySelectorAll('.dropdown-submenu .dropdown-menu').forEach(function(otherMenu) {
+                    // Close other submenus
+                    document.querySelectorAll('.dropdown-submenu .dropdown-menu').forEach(otherMenu => {
                         if (otherMenu !== menu && otherMenu.classList.contains('show')) {
                             otherMenu.classList.remove('show');
                         }
@@ -69,95 +67,91 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            // Hover handler for desktop
+            // Desktop hover handling
             if (window.innerWidth > 991) {
-                el.addEventListener('mouseenter', function() {
-                    menu.classList.add('show');
-                });
-
-                el.addEventListener('mouseleave', function() {
-                    menu.classList.remove('show');
-                });
+                el?.addEventListener('mouseenter', () => menu.classList.add('show'));
+                el?.addEventListener('mouseleave', () => menu.classList.remove('show'));
             }
         });
     }
 
     // =============================================
-    // Hero Slider Functionality
+    // Hero Slider (Vanilla JS Version)
     // =============================================
     function setupSlider() {
-        let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
-        const totalSlides = slides.length;
-        let slideInterval;
+        const nextBtn = document.querySelector('.slider-control.next');
+        const prevBtn = document.querySelector('.slider-control.prev');
+        let currentSlide = 0;
+        let sliderInterval;
 
         function showSlide(index) {
-            slides.forEach(slide => slide.classList.remove('active'));
-            slides[index].classList.add('active');
+            slides.forEach(slide => slide.classList.remove('active-slide'));
+            slides[index]?.classList.add('active-slide');
         }
 
         function nextSlide() {
-            currentSlide = (currentSlide + 1) % totalSlides;
+            currentSlide = (currentSlide + 1) % slides.length;
             showSlide(currentSlide);
         }
 
         function prevSlide() {
-            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
             showSlide(currentSlide);
         }
 
-        document.querySelector('.next')?.addEventListener('click', nextSlide);
-        document.querySelector('.prev')?.addEventListener('click', prevSlide);
-
-        function startSlider() {
-            slideInterval = setInterval(nextSlide, 5000);
+        function startAutoSlide() {
+            sliderInterval = setInterval(nextSlide, 5000);
         }
 
-        function pauseSlider() {
-            clearInterval(slideInterval);
+        function stopAutoSlide() {
+            clearInterval(sliderInterval);
         }
 
-        const slider = document.querySelector('.hero-slider');
-        if (slider) {
-            slider.addEventListener('mouseenter', pauseSlider);
-            slider.addEventListener('mouseleave', startSlider);
-            startSlider();
-        }
+        if (slides.length > 0) {
+            showSlide(0);
+            startAutoSlide();
 
-        showSlide(0);
+            // Event listeners
+            nextBtn?.addEventListener('click', nextSlide);
+            prevBtn?.addEventListener('click', prevSlide);
+
+            const slider = document.querySelector('.hero-slider');
+            slider?.addEventListener('mouseenter', stopAutoSlide);
+            slider?.addEventListener('mouseleave', startAutoSlide);
+        }
     }
 
     // =============================================
     // Scroll Progress Indicator
     // =============================================
     function setupScrollProgress() {
-        window.addEventListener('scroll', function() {
+        window.addEventListener('scroll', () => {
             const scrollTop = document.documentElement.scrollTop;
             const scrollHeight = document.documentElement.scrollHeight;
             const clientHeight = document.documentElement.clientHeight;
             const progress = (scrollTop / (scrollHeight - clientHeight)) * 100;
-            const progressBar = document.querySelector('.scroll-progress');
-            if (progressBar) {
-                progressBar.style.width = progress + '%';
-            }
+            document.querySelector('.scroll-progress')?.style.width = `${progress}%`;
         });
     }
 
     // =============================================
-    // Initialize Everything
+    // Mobile Menu Toggle
     // =============================================
-    initializeTheme();
-    setupDropdowns();
-    setupSlider();
-    setupScrollProgress();
-
-    // Mobile menu toggle animation
     document.querySelector('.navbar-toggler')?.addEventListener('click', function() {
         this.classList.toggle('active');
         this.innerHTML = this.classList.contains('active')
             ? '<i class="fas fa-times"></i>'
             : '<span class="navbar-toggler-icon"></span>';
     });
+
+    // =============================================
+    // Initialize All Components
+    // =============================================
+    initializeTheme();
+    setupDropdowns();
+    setupSlider();
+    setupScrollProgress();
 
     // Console greeting
     console.log('%c🏃‍♂️ Physical Education Site Loaded!', 'color: #FF3E41; font-size: 14px;');
@@ -168,4 +162,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const storedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     document.documentElement.setAttribute('data-bs-theme',
-        storedTheme ? storedTheme
+        storedTheme ? storedTheme : (prefersDark ? 'dark' : 'light')
+    );
+})();

@@ -28,11 +28,14 @@ from .views import (
     DocumentVersionHistoryView,
     CreateNewVersionView,
     DocumentUploadView,
+    HomeView,
+    ContactView,
 )
 
 urlpatterns = [
     # Lesson-related URLs
-    path("", LessonListView.as_view(), name="lesson_list"),
+    path("", HomeView.as_view(), name="home"),
+    path("contact/", ContactView.as_view(), name="contact"),
     path("<uuid:pk>/", LessonDetailView.as_view(), name="lesson_detail"),
     path("add/", LessonCreateView.as_view(), name="add_lesson"),
     path("update/<uuid:pk>/", LessonUpdateView.as_view(), name="update_lesson"),

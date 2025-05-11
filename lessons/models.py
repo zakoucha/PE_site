@@ -120,8 +120,9 @@ class CurriculumDocument(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         null=True,
-        related_name='uploaded_documents'
+        related_name="uploaded_documents",
     )
+
     class Meta:
         ordering = ["grade", "document_type", "-version"]
         unique_together = [("grade", "document_type", "academic_year", "version")]
@@ -193,6 +194,7 @@ class Activity(models.Model):
     grade_level = models.IntegerField(choices=Lesson.GRADE_LEVELS, default=1)
     equipment_needed = models.ManyToManyField(Equipment, blank=True)
     objectives = ArrayField(models.CharField(max_length=20), blank=True, default=list)
+    image = models.ImageField(upload_to="activity_images/", blank=True, null=True)
 
     def __str__(self):
         return f"{self.name} ({self.get_intensity_level_display()})"
@@ -288,6 +290,13 @@ class Review(models.Model):
 
     def total_likes(self):
         return self.likes.count()
+
+
+class ContactMessage(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 @receiver(post_save, sender=get_user_model())

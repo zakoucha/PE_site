@@ -34,7 +34,37 @@ from .forms import (
     ProfileForm,
     SafetyRuleForm,
     CurriculumDocumentForm,
+    ContactForm,
 )
+
+
+class HomeView(LoginRequiredMixin, TemplateView):
+    template_name = "home.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user_lessons"] = Lesson.objects.filter(author=self.request.user)
+        context["recent_lessons"] = Lesson.objects.all().order_by("-created_at")[:5]
+        context["activities"] = Activity.objects.filter(grade_level__in=[1, 2, 3])[:6]
+        context["form"] = ContactForm()
+        return context
+
+
+class ContactView(LoginRequiredMixin, FormView):
+    template_name = "home.html"
+    form_class = ContactForm
+    success_url = reverse_lazy("home")
+
+    def form_valid(self, form):
+        # Add logic to handle form submission (e.g., save to database or send email)
+        messages.success(
+            self.request, "Thank you for your message! We'll get back to you soon."
+        )
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Please correct the errors below.")
+        return super().form_invalid(form)
 
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):

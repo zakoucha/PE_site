@@ -582,3 +582,261 @@ p {
 .dropdown-toggle::after {
     color: inherit;
 }
+/* ===== Homepage Specific Styles ===== */
+.hero-section {
+  padding: 4rem 0;
+  background: #f8f9fa;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.hero-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.hero-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a3a7b;
+  margin-bottom: 1.5rem;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: #6c757d;
+  margin-bottom: 2rem;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.btn-primary {
+  background: #2B59C3;
+  border-color: #2B59C3;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+}
+
+.btn-secondary {
+  background: #00C49A;
+  border-color: #00C49A;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+}
+
+.pe-hero {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 1rem 2rem rgba(43,89,195,0.1));
+}
+
+/* Stats Section */
+.stats-section {
+  padding: 4rem 0;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.stat-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.stat-icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  background: #e9f2ff;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #2B59C3;
+}
+
+.stat-content h3 {
+  font-size: 1.75rem;
+  margin-bottom: 0.25rem;
+  color: #1a3a7b;
+}
+
+.stat-content p {
+  color: #6c757d;
+  margin: 0;
+}
+
+/* Quick Actions */
+.actions-section {
+  padding: 4rem 0;
+  background: #f8f9fa;
+}
+
+.section-title {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: #1a3a7b;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.action-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  text-align: center;
+  transition: transform 0.2s ease;
+  color: inherit;
+  text-decoration: none;
+  box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.05);
+}
+
+.action-card:hover {
+  transform: translateY(-5px);
+  text-decoration: none;
+}
+
+.action-icon {
+  font-size: 2rem;
+  color: #2B59C3;
+  margin-bottom: 1rem;
+}
+
+.action-card h4 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: #1a3a7b;
+}
+
+.action-card p {
+  color: #6c757d;
+  margin: 0;
+}
+
+/* Recent Activity */
+.activity-section {
+  padding: 4rem 0;
+}
+
+.activity-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.activity-card {
+
+}
+.hero-section {
+  padding: 6rem 0 4rem;
+  background: linear-gradient(15deg, #f8fbff 0%, #ffffff 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background: linear-gradient(to bottom right, transparent 49.5%, #2B59C3 50%);
+  opacity: 0.05;
+}
+
+.hero-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-title {
+  font-size: 2.75rem;
+  font-weight: 700;
+  color: #1a3a7b;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  font-size: 1.35rem;
+  color: #6c757d;
+  margin-bottom: 2rem;
+  font-weight: 400;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+
+.btn-primary {
+  background: #2B59C3;
+  border: 2px solid #2B59C3;
+  color: white;
+  padding: 0.9rem 2rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-primary {
+  border: 2px solid #2B59C3;
+  color: #2B59C3;
+  padding: 0.9rem 2rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(43,89,195,0.2);
+}
+
+.pe-hero {
+  width: 100%;
+  height: auto;
+  opacity: 0.9;
+}
+
+@media (max-width: 992px) {
+  .hero-content {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .hero-actions {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .pe-hero {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+}
