@@ -12,6 +12,6 @@ WORKDIR /code
 # Install dependencies
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
-RUN apt-get update && apt-get install -y postgresql-client
+RUN python manage.py collectstatic --noinput
 # Copy project
 COPY . .
