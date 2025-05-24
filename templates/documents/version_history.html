@@ -20,7 +20,7 @@
                 <td>{% if version.is_current %}<i class="fas fa-check"></i>{% endif %}</td>
                 <td>{{ version.changelog|default:"No changelog" }}</td>
                 <td>
-                    <a href="{% url 'download_curriculum' pk=version.pk %}" class="btn btn-sm btn-primary">
+                    <a href="{% url 'lessons:download_curriculum' pk=version.pk %}" class="btn btn-sm btn-primary">
                         <i class="fas fa-download"></i> Download
                     </a>
                     {% if not version.is_current %}
@@ -33,7 +33,7 @@
             {% endfor %}
         </tbody>
     </table>
-    <a href="{% url 'grade_documents' grade=versions.0.grade doc_type=versions.0.document_type %}" class="btn btn-outline-primary">
+    <a href="{% url 'lessons:grade_documents' grade=versions.0.grade doc_type=versions.0.document_type %}" class="btn btn-outline-primary">
         Back to Documents
     </a>
 </div>

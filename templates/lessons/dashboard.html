@@ -8,8 +8,8 @@
         <div class="col-md-3">
             <!-- Sidebar -->
             <div class="list-group">
-                <a href="{% url 'dashboard' %}" class="list-group-item active">Dashboard</a>
-                <a href="{% url 'lesson_list' %}" class="list-group-item">My Lessons</a>
+                <a href="{% url 'lessons:dashboard' %}" class="list-group-item active">Dashboard</a>
+                <a href="{% url 'lessons:lesson_list' %}" class="list-group-item">My Lessons</a>
                 <a href="{% url 'account_logout' %}" class="list-group-item text-danger">Log Out</a>
             </div>
         </div>
@@ -25,7 +25,7 @@
                             {% if user_lessons %}
                                 <div class="list-group">
                                     {% for lesson in user_lessons|slice:":5" %}
-                                        <a href="{% url 'lesson_detail' lesson.pk %}"
+                                        <a href="{% url 'lessons:lesson_detail' lesson.pk %}"
                                            class="list-group-item list-group-item-action">
                                             {{ lesson.title }}
                                             <small class="text-muted d-block">
@@ -34,7 +34,7 @@
                                         </a>
                                     {% endfor %}
                                 </div>
-                                <a href="{% url 'lesson_list' %}" class="btn btn-link mt-2">
+                                <a href="{% url 'lessons:lesson_list' %}" class="btn btn-link mt-2">
                                     View All Lessons
                                 </a>
                             {% else %}
@@ -57,7 +57,7 @@
                                             </div>
                                         {% endfor %}
                                     </div>
-                                    <a href="{% url 'equipment_list' %}" class="btn btn-link mt-2">
+                                    <a href="{% url 'lessons:equipment_list' %}" class="btn btn-link mt-2">
                                         View Full Inventory
                                     </a>
                                 {% else %}

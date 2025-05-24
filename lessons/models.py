@@ -3,24 +3,10 @@ from django.db import models
 from django.conf import settings
 from django.urls import reverse
 from django.contrib.postgres.fields import ArrayField
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+
 from django.contrib.auth import get_user_model
-from django.utils import timezone
 
 User = get_user_model()
-
-
-class Profile(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile"
-    )
-    school = models.ForeignKey(
-        "School", on_delete=models.SET_NULL, null=True, blank=True
-    )
-
-    def __str__(self):
-        return f"{self.user.email}'s Profile"
 
 
 class Lesson(models.Model):
@@ -83,7 +69,7 @@ class Lesson(models.Model):
         return f"{self.title} (Grade {self.grade_level})"
 
     def get_absolute_url(self):
-        return reverse("lesson_detail", kwargs={"pk": self.pk})
+        return reverse("lessons:lesson_detail", kwargs={"pk": self.pk})
 
 
 class CurriculumDocument(models.Model):
@@ -297,15 +283,3 @@ class ContactMessage(models.Model):
     email = models.EmailField()
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-
-
-@receiver(post_save, sender=get_user_model())
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-
-
-@receiver(post_save, sender=get_user_model())
-def save_user_profile(sender, instance, **kwargs):
-    if hasattr(instance, "profile"):
-        instance.profile.save()

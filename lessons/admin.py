@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Lesson, Activity, Review, Profile, SafetyRule, CurriculumDocument
+from .models import Lesson, Activity, Review, SafetyRule, CurriculumDocument
 
 
 @admin.register(SafetyRule)
@@ -64,12 +64,6 @@ class SafetyRuleAdmin(admin.ModelAdmin):
         if not obj.pk:  # Only set author if creating new
             obj.author = request.user
         super().save_model(request, obj, form, change)
-
-
-@admin.register(Profile)
-class ProfileAdmin(admin.ModelAdmin):
-    list_display = ("user", "school")
-    search_fields = ("user__email", "school__name")
 
 
 class ActivityInline(admin.TabularInline):

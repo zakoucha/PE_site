@@ -36,7 +36,7 @@
         <div class="alert alert-info mt-4">
             {% if not request.user.profile.school %}
                 You need to be assigned to a school to view progress.
-                <a href="{% url 'profile_update' %}" class="alert-link">Update your profile</a>
+                <a href="{% url 'accounts:profile_update' %}" class="alert-link">Update your profile</a>
             {% else %}
                 No skill assessments found for your school.
             {% endif %}

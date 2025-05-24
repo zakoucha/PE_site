@@ -1,23 +1,95 @@
 {% extends "_base.html" %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="card border-danger">
-        <div class="card-header bg-danger text-white">
-            <h4><i class="fas fa-trash-alt me-2"></i>Delete Equipment</h4>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-lg border-0 rounded-3 equipment-delete-card">
+        <!-- Card Header -->
+        <div class="card-header bg-danger text-white py-3">
+          <h4 class="mb-0 fw-bold">
+            <i class="fas fa-trash-alt me-2"></i>Delete Equipment
+          </h4>
         </div>
-        <div class="card-body">
-            <p>Are you sure you want to delete "{{ object.name }}"?</p>
-            <form method="post">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger">
-                    <i class="fas fa-check me-2"></i>Confirm Delete
-                </button>
-                <a href="{% url 'equipment_list' %}" class="btn btn-secondary">
-                    <i class="fas fa-times me-2"></i>Cancel
+
+        <!-- Card Body -->
+        <div class="card-body p-4">
+          <p class="lead mb-3">Are you sure you want to delete <strong>"{{ object.name|truncatechars:50 }}"</strong>?</p>
+          <p class="text-danger mb-4">This action cannot be undone.</p>
+
+          <!-- Form -->
+          <form method="post" id="deleteForm">
+            {% csrf_token %}
+            <div class="form-footer p-3 bg-light border-top rounded-bottom sticky-bottom shadow-sm">
+              <div class="d-flex justify-content-between align-items-center">
+                <a href="{% url 'equipment_list' %}" class="btn btn-outline-secondary transition-all" aria-label="Cancel and return to equipment list">
+                  <i class="fas fa-arrow-left me-2"></i>Cancel
                 </a>
-            </form>
+                <button type="submit" class="btn btn-danger transition-all position-relative" id="deleteButton" aria-label="Confirm deletion of equipment">
+                  <span class="button-text">
+                    <i class="fas fa-trash-alt me-2"></i>Confirm Delete
+                  </span>
+                  <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+          </form>
         </div>
+      </div>
     </div>
+  </div>
 </div>
+
+<!-- Custom CSS -->
+<style>
+.equipment-delete-card {
+  transition: all 0.3s ease;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.equipment-delete-card:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
+}
+.transition-all {
+  transition: all 0.3s ease;
+}
+.transition-all:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.sticky-bottom {
+  position: sticky;
+  bottom: 0;
+  z-index: 1000;
+}
+.form-footer {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(248, 249, 250, 1));
+}
+@media (max-width: 768px) {
+  .card-body {
+    padding: 1.5rem;
+  }
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  .lead {
+    font-size: 1.1rem;
+  }
+}
+</style>
+
+<!-- Custom JavaScript -->
+<script>
+document.getElementById('deleteForm').addEventListener('submit', function(e) {
+  const deleteButton = document.getElementById('deleteButton');
+  const buttonText = deleteButton.querySelector('.button-text');
+  const spinner = deleteButton.querySelector('.spinner-border');
+
+  // Disable button and show spinner
+  deleteButton.disabled = true;
+  buttonText.classList.add('d-none');
+  spinner.classList.remove('d-none');
+});
+</script>
 {% endblock %}

@@ -5,23 +5,10 @@ from .models import (
     Equipment,
     Activity,
     SkillAssessment,
-    Profile,
     School,
     SafetyRule,
     CurriculumDocument,
 )
-
-
-class ProfileForm(forms.ModelForm):
-    school = forms.ModelChoiceField(
-        queryset=School.objects.all(),
-        empty_label="Select your school",
-        widget=forms.Select(attrs={"class": "form-control"}),
-    )
-
-    class Meta:
-        model = Profile
-        fields = ["school"]
 
 
 class LessonForm(forms.ModelForm):
