@@ -75,7 +75,7 @@ class ReplyForm(forms.ModelForm):
 
 
 class LessonPlanForm(forms.Form):
-    GRADE_CHOICES = [(i, f"Grade {i}") for i in range(1, 7)]
+    GRADE_CHOICES = [(i, f"Grade {i}") for i in range(1, 6)]
 
     grade_level = forms.ChoiceField(choices=GRADE_CHOICES)
     duration = forms.IntegerField(
@@ -183,12 +183,15 @@ class CurriculumDocumentForm(forms.ModelForm):
 
 
 class ContactForm(forms.Form):
-    name = forms.CharField(
-        max_length=100, widget=forms.TextInput(attrs={"placeholder": "Your Name"})
-    )
-    email = forms.EmailField(
-        widget=forms.EmailInput(attrs={"placeholder": "Your Email"})
+    subject = forms.CharField(
+        max_length=100, widget=forms.TextInput(attrs={"placeholder": "Subject"})
     )
     message = forms.CharField(
-        widget=forms.Textarea(attrs={"placeholder": "Your Message", "rows": 5})
+        widget=forms.Textarea(
+            attrs={"placeholder": "Your feedback or suggestion", "rows": 5}
+        )
+    )
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={"placeholder": "Your email (optional)"}),
+        required=False,
     )

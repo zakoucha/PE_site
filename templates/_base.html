@@ -21,37 +21,26 @@
 <body class="d-flex flex-column min-vh-100">
     <div class="scroll-progress"></div>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-md fixed-top shadow-sm" id="mainNavbar">
+<!-- templates/_base.html -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
-                <i class="fas fa-running me-2"></i>
-                <span class="fw-bold">Physical Education</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand" href="{% url 'home' %}">PE Portal</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                    {% if user.is_authenticated %}
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'lessons:dashboard' %}" aria-label="Dashboard">
-                            <i class="fas fa-tachometer-alt me-1"></i>Dashboard
-                        </a>
-                    </li>
-                    {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'lessons:lesson_list' %}" aria-label="Lessons">
-                            <i class="fas fa-book-open me-1"></i>Lessons
-                        </a>
+                        <a class="nav-link" href="{% url 'lessons:lesson_list' %}">Lessons</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="documentsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Documents menu">
-                            <i class="fas fa-folder-open me-1"></i>Documents
+                        <a class="nav-link dropdown-toggle" href="#" id="documentsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Documents
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="documentsDropdown">
                             {% for grade in "12345" %}
                             <li class="dropdown-submenu dropend">
-                                <a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Grade {{ grade }}</a>
+                                <a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown">Grade {{ grade }}</a>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" href="{% url 'lessons:grade_documents' grade=grade doc_type='session_sheet' %}">
                                         <i class="fas fa-file-alt me-2"></i>Session Sheets
@@ -81,81 +70,25 @@
                             </a></li>
                         </ul>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'lessons:shared_lessons' %}">Shared Lessons</a>
+                    </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="peDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="PE Tools menu">
-                            <i class="fas fa-dumbbell me-1"></i>PE Tools
-                        </a>
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Tools</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'lessons:plan_generator' %}">
-                                <i class="fas fa-magic me-1"></i>Lesson Plan Generator
-                            </a></li>
-                            <li><a class="dropdown-item" href="{% url 'lessons:activity_bank' 'warmup' %}">
-                                <i class="fas fa-clipboard-list me-1"></i>Activity Bank
-                            </a></li>
-                            <li><a class="dropdown-item" href="{% url 'lessons:safety_guidelines' %}">
-                                <i class="fas fa-shield-alt me-1"></i>Safety Guidelines
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'lessons:equipment_list' %}">
-                                <i class="fas fa-basketball-ball me-1"></i>Equipment Inventory
-                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'lessons:progress_tracker' %}">Progress Tracker</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lessons:plan_generator' %}">Plan Generator</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lessons:equipment_list' %}">Equipment</a></li>
                         </ul>
                     </li>
-                </ul>
-
-                <form class="d-flex me-3 my-2 my-md-0" action="{% url 'lessons:search_results' %}" method="get" role="search">
-                    <input class="form-control me-2" type="search" name="q" placeholder="Search resources..." aria-label="Search resources">
-                    <button class="btn btn-outline-success transition-all" type="submit" aria-label="Submit search">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </form>
-
-                <ul class="navbar-nav ms-auto">
-                    {% if user.is_authenticated %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="User menu">
-                            <i class="fas fa-user-circle me-1"></i>
-                            <span>{{ user.username }}</span>
-                            {% if user.profile and user.profile.school %}
-                            <span class="badge bg-light text-dark ms-2" title="Your school">{{ user.profile.school.name|truncatechars:10 }}</span>                            {% endif %}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="{% url 'lessons:dashboard' %}">
-                                <i class="fas fa-tachometer-alt me-1"></i>Dashboard
-                            </a></li>
-                            <li><a class="dropdown-item" href="{% url 'accounts:profile_update' %}">
-                                <i class="fas fa-user-edit me-1"></i>My Profile
-                            </a></li>
-                            <li><a class="dropdown-item" href="{% url 'lessons:progress_tracker' %}">
-                                <i class="fas fa-chart-line me-1"></i>Progress Tracker
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form method="post" action="{% url 'account_logout' %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="dropdown-item">
-                                        <i class="fas fa-sign-out-alt me-1"></i>Log Out
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                    {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'account_login' %}" aria-label="Log in">
-                            <i class="fas fa-sign-in-alt me-1"></i>Log In
-                        </a>
+                        <a class="nav-link" href="{% url 'lessons:contact' %}">Contact</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'account_signup' %}" aria-label="Sign up">
-                            <i class="fas fa-user-plus me-1"></i>Sign Up
-                        </a>
+                        <a class="nav-link" href="{% url 'accounts:profile_update' %}">Profile</a>
                     </li>
-                    {% endif %}
-                    <li class="nav-item ms-2">
-                        <button id="themeToggle" class="btn btn-sm btn-outline-light transition-all" aria-label="Toggle theme" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Toggle light/dark theme">
-                            <i class="fas fa-moon theme-icon"></i>
-                        </button>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'account_logout' %}">Log Out</a>
                     </li>
                 </ul>
             </div>

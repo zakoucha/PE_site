@@ -1,5 +1,9 @@
 import logging
 import os
+
+from django.core.mail import send_mail
+from django.views.decorators.cache import cache_page
+from reportlab.pdfgen import canvas
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.views import View
@@ -25,6 +29,7 @@ from .models import (
     SafetyRule,
     CurriculumDocument,
     Student,
+    Feedback,
 )
 from .forms import (
     LessonForm,
@@ -40,6 +45,15 @@ from .forms import (
 logger = logging.getLogger(__name__)
 
 
+class SharedLessonsView(LoginRequiredMixin, ListView):
+    model = Lesson
+    template_name = "lessons/shared_lessons.html"
+    context_object_name = "lessons"
+
+    def get_queryset(self):
+        return Lesson.objects.filter(shareable=True).exclude(author=self.request.user)
+
+
 class HomeView(LoginRequiredMixin, TemplateView):
     template_name = "home.html"
 
@@ -52,21 +66,40 @@ class HomeView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class ContactView(LoginRequiredMixin, FormView):
-    template_name = "home.html"
+class ContactView(SuccessMessageMixin, FormView):
     form_class = ContactForm
-    success_url = reverse_lazy("home")
+    template_name = "lessons/contact.html"
+    success_url = reverse_lazy("lessons:dashboard")
+    success_message = "Thank you for your feedback! We'll get back to you soon."
 
     def form_valid(self, form):
-        # Add logic to handle form submission (e.g., save to database or send email)
-        messages.success(
-            self.request, "Thank you for your message! We'll get back to you soon."
-        )
-        return super().form_valid(form)
+        subject = form.cleaned_data["subject"]
+        message = form.cleaned_data["message"]
+        email = form.cleaned_data["email"] or self.request.user.email
 
-    def form_invalid(self, form):
-        messages.error(self.request, "Please correct the errors below.")
-        return super().form_invalid(form)
+        # Save to database
+        Feedback.objects.create(
+            user=self.request.user, subject=subject, message=message, email=email
+        )
+
+        # Log feedback
+        logger.info(
+            f"Feedback received: Subject={subject}, Message={message}, Email={email}"
+        )
+
+        # Send email to admin
+        try:
+            send_mail(
+                subject=f"New Feedback: {subject}",
+                message=f"From: {self.request.user.username} ({email})\n\n{message}",
+                from_email="no-reply@peportal.com",
+                recipient_list=["zakidjebiri@outlook.com"],
+                fail_silently=False,
+            )
+        except Exception as e:
+            logger.error(f"Failed to send feedback email: {e}")
+
+        return super().form_valid(form)
 
 
 class LessonCreateView(LoginRequiredMixin, CreateView):
@@ -116,13 +149,7 @@ class LessonListView(LoginRequiredMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        if search_query := self.request.GET.get("q"):
-            return queryset.filter(
-                Q(title__icontains=search_query)
-                | Q(description__icontains=search_query)
-            )
-        return queryset.annotate(like_count=Count("reviews__likes"))
+        return Lesson.objects.filter(author=self.request.user).order_by("-created_at")
 
 
 class LessonDetailView(DetailView):
@@ -135,6 +162,9 @@ class LessonDetailView(DetailView):
         context["review_form"] = ReviewForm()
         context["reply_form"] = ReplyForm()
         return context
+
+    def get_queryset(self):
+        return Lesson.objects.select_related("author").prefetch_related("reviews")
 
 
 class EquipmentListView(LoginRequiredMixin, ListView):
@@ -401,31 +431,29 @@ class UserDashboardView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class LessonPlanGeneratorView(FormView):
-    template_name = "lessons/plan_generator.html"
+class LessonPlanGeneratorView(LoginRequiredMixin, FormView):
     form_class = LessonPlanForm
-    success_url = reverse_lazy("home")  # Or your preferred success URL
+    template_name = "lessons/plan_generator.html"
+    success_url = reverse_lazy("lessons:dashboard")
 
     def form_valid(self, form):
-        # Process the form data and generate lesson plan
-        # You can customize this based on your requirements
-        grade_level = form.cleaned_data["grade_level"]
-        duration = form.cleaned_data["duration"]
-        objectives = form.cleaned_data["objectives"]
-        equipment = form.cleaned_data["equipment_available"]
-
-        # Add your lesson plan generation logic here
-        # For example, you might create a new Lesson object:
-        lesson = Lesson.objects.create(
-            title=f"Generated Lesson Plan for Grade {grade_level}",
-            author=self.request.user,
-            grade_level=grade_level,
-            duration=duration,
-            # ... other fields ...
+        lessons = Lesson.objects.filter(
+            grade_level=form.cleaned_data["grade_level"],
+            activity_type__in=form.cleaned_data["activity_types"],
         )
-        lesson.equipment_needed.set(equipment)
-
-        return super().form_valid(form)
+        response = HttpResponse(content_type="application/pdf")
+        response["Content-Disposition"] = 'attachment; filename="lesson_plan.pdf"'
+        p = canvas.Canvas(response)
+        y = 800
+        for lesson in lessons:
+            p.drawString(100, y, f"{lesson.title} (Grade {lesson.grade_level})")
+            y -= 20
+            if lesson.description:
+                p.drawString(100, y, f"Description: {lesson.description[:100]}")
+                y -= 20
+        p.showPage()
+        p.save()
+        return response
 
 
 class LessonPlanResultView(LoginRequiredMixin, DetailView):

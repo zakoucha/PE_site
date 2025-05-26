@@ -1,0 +1,71 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Shared Lessons{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="display-4 fw-bold mb-4">Shared Lessons</h1>
+    <p class="lead text-muted mb-4">Explore lessons shared by other teachers.</p>
+
+    {% if lessons %}
+    <!-- Lessons Grid -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for lesson in lessons %}
+        <div class="col">
+            <div class="card h-100 lesson-card shadow-sm border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h3 class="h5 mb-0">
+                        <a href="{% url 'lessons:lesson_detail' pk=lesson.pk %}" class="text-white text-decoration-none">
+                            {{ lesson.title|truncatechars:50 }}
+                        </a>
+                    </h3>
+                </div>
+                <div class="card-body">
+                    {% if lesson.description %}
+                    <p class="card-text text-muted mb-3">{{ lesson.description|truncatechars:100 }}</p>
+                    {% else %}
+                    <p class="card-text text-muted mb-3">No description provided</p>
+                    {% endif %}
+                    <p class="card-text">
+                        <small class="text-muted">
+                            Grade: {{ lesson.get_grade_level_display }} |
+                            Type: {{ lesson.get_activity_type_display }} |
+                            By: {{ lesson.author.username }}
+                        </small>
+                    </p>
+                </div>
+                <div class="card-footer bg-light border-0">
+                    <a href="{% url 'lessons:lesson_detail' pk=lesson.pk %}" class="btn btn-sm btn-outline-primary transition-all">
+                        View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        No shared lessons available. Encourage colleagues to share their lessons!
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.transition-all {
+    transition: all 0.3s ease;
+}
+.transition-all:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+}
+.card {
+    border: none;
+    border-radius: 10px;
+}
+.lesson-card:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease;
+}
+</style>
+{% endblock %}

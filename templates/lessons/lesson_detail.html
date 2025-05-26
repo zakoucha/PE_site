@@ -41,6 +41,12 @@
             {% else %}
               <p class="text-muted"><i class="fas fa-info-circle me-2"></i>No files uploaded for this lesson</p>
             {% endif %}
+            {% if lesson.video_url %}
+            <iframe src="{{ lesson.video_url }}" frameborder="0" allowfullscreen></iframe>
+            {% endif %}
+            {% for rule in lesson.safety_rules.all %}
+            <div class="alert alert-warning">{{ rule.description }}</div>
+            {% endfor %}
           </div>
         </div>
       </div>

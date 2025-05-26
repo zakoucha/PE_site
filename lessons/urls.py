@@ -29,6 +29,7 @@ from .views import (
     DocumentUploadView,
     HomeView,
     ContactView,
+    SharedLessonsView,
 )
 
 app_name = "lessons"
@@ -46,6 +47,7 @@ urlpatterns = [
     path("<uuid:pk>/", LessonDetailView.as_view(), name="lesson_detail"),
     path("add/", LessonCreateView.as_view(), name="add_lesson"),
     path("lessons/", LessonListView.as_view(), name="lesson_list"),
+    path("shared/", SharedLessonsView.as_view(), name="shared_lessons"),
     path("update/<uuid:pk>/", LessonUpdateView.as_view(), name="update_lesson"),
     path("lessons/<uuid:pk>/delete/", LessonDeleteView.as_view(), name="delete_lesson"),
     path("download/<uuid:pk>/", lesson_download_file, name="download_lesson"),
@@ -55,7 +57,7 @@ urlpatterns = [
     # Review system
     path("reviews/reply/<int:review_id>/", reply_review, name="reply_review"),
     # PE-Specific Features
-    path("plan-generator/", LessonPlanGeneratorView.as_view(), name="plan_generator"),
+    path("plan/generator/", LessonPlanGeneratorView.as_view(), name="plan_generator"),
     path("plan-result/", LessonPlanResultView.as_view(), name="plan_result"),
     path("equipment/", EquipmentListView.as_view(), name="equipment_list"),
     path("equipment/add/", EquipmentCreateView.as_view(), name="equipment_add"),

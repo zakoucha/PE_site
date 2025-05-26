@@ -34,13 +34,16 @@ class Lesson(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     cover = models.ImageField(upload_to="covers/", blank=True, null=True)
-
+    shareable = models.BooleanField(
+        default=False, help_text="Allow other teachers to view"
+    )
     # PE-Specific Fields
     activity_type = models.CharField(
         max_length=20, choices=ACTIVITY_TYPES, default="main"
     )
     grade_level = models.IntegerField(choices=GRADE_LEVELS, default=1)
     duration = models.PositiveIntegerField(help_text="Duration in minutes", default=30)
+    video_url = models.URLField(blank=True, null=True)
     age_group = models.CharField(
         max_length=20, choices=AGE_GROUP_CHOICES, null=True, blank=True
     )
@@ -133,6 +136,7 @@ class Equipment(models.Model):
         null=True,
     )
     quantity = models.PositiveIntegerField(default=1)
+    available = models.PositiveIntegerField(default=1)
     storage_location = models.CharField(max_length=100)
     condition = models.CharField(
         max_length=20, choices=CONDITION_CHOICES, default="good"
@@ -276,6 +280,22 @@ class Review(models.Model):
 
     def total_likes(self):
         return self.likes.count()
+
+
+class Feedback(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="feedbacks",
+    )
+    subject = models.CharField(max_length=100)
+    message = models.TextField()
+    email = models.EmailField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.subject} by {self.user or self.email}"
 
 
 class ContactMessage(models.Model):

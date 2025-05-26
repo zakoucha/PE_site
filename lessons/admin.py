@@ -1,6 +1,14 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Lesson, Activity, Review, SafetyRule, CurriculumDocument
+from .models import Lesson, Activity, Review, SafetyRule, CurriculumDocument, Feedback
+
+
+@admin.register(Feedback)
+class FeedbackAdmin(admin.ModelAdmin):
+    list_display = ("subject", "user", "email", "created_at")
+    list_filter = ("created_at", "user")
+    search_fields = ("subject", "message", "email")
+    readonly_fields = ("user", "subject", "message", "email", "created_at")
 
 
 @admin.register(SafetyRule)
