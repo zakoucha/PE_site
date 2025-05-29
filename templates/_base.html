@@ -6,41 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Physical Education{% endblock title %}</title>
     <!-- CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/base.css' %}" />
     <link rel="icon" href="{% static 'images/favicon.ico' %}">
     <script>
-    // Immediate theme initialization
-    const storedTheme = localStorage.getItem('theme') ||
-        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-bs-theme', storedTheme);
+        // Immediate theme initialization
+        const storedTheme = localStorage.getItem('theme') ||
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-bs-theme', storedTheme);
     </script>
 </head>
 <body class="d-flex flex-column min-vh-100">
     <div class="scroll-progress"></div>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+<!-- templates/_base.html -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">
-                <i class="fas fa-running me-2"></i>Physical Education
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <a class="navbar-brand" href="{% url 'home' %}">PE Portal</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <ul class="navbar-nav me-auto">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'dashboard' %}">
-                                <i class="fas fa-tachometer-alt me-1"></i>Dashboard
-                            </a>
-                        </li>
-                    {% endif %}
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'lesson_list' %}">
-                            <i class="fas fa-book-open me-1"></i>Lessons
-                        </a>
+                        <a class="nav-link" href="{% url 'lessons:lesson_list' %}">Lessons</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="documentsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -51,107 +42,53 @@
                             <li class="dropdown-submenu dropend">
                                 <a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown">Grade {{ grade }}</a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{% url 'grade_documents' grade=grade doc_type='session_sheet' %}">
+                                    <li><a class="dropdown-item" href="{% url 'lessons:grade_documents' grade=grade doc_type='session_sheet' %}">
                                         <i class="fas fa-file-alt me-2"></i>Session Sheets
                                     </a></li>
-                                    <li><a class="dropdown-item" href="{% url 'grade_documents' grade=grade doc_type='annual_program' %}">
+                                    <li><a class="dropdown-item" href="{% url 'lessons:grade_documents' grade=grade doc_type='annual_program' %}">
                                         <i class="fas fa-calendar-alt me-2"></i>Annual Program
                                     </a></li>
-                                    <li><a class="dropdown-item" href="{% url 'grade_documents' grade=grade doc_type='annual_distribution' %}">
+                                    <li><a class="dropdown-item" href="{% url 'lessons:grade_documents' grade=grade doc_type='annual_distribution' %}">
                                         <i class="fas fa-chart-line me-2"></i>Annual Distribution
                                     </a></li>
-                                    <li><a class="dropdown-item" href="{% url 'grade_documents' grade=grade doc_type='trimester_clip' %}">
+                                    <li><a class="dropdown-item" href="{% url 'lessons:grade_documents' grade=grade doc_type='trimester_clip' %}">
                                         <i class="fas fa-video me-2"></i>Trimester Clips
                                     </a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="{% url 'upload_document' %}?grade={{ grade }}">
+                                    <li><a class="dropdown-item" href="{% url 'lessons:upload_document' %}?grade={{ grade }}">
                                         <i class="fas fa-upload me-2"></i>Upload Document
                                     </a></li>
                                 </ul>
                             </li>
                             {% endfor %}
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'grade_documents' grade=0 doc_type='curriculum' %}">
+                            <li><a class="dropdown-item" href="{% url 'lessons:grade_documents' grade=0 doc_type='curriculum' %}">
                                 <i class="fas fa-book me-2"></i>Physical Education Curriculum
                             </a></li>
-                            <li><a class="dropdown-item" href="{% url 'upload_document' %}">
+                            <li><a class="dropdown-item" href="{% url 'lessons:upload_document' %}">
                                 <i class="fas fa-upload me-2"></i>Upload New Document
                             </a></li>
                         </ul>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'lessons:shared_lessons' %}">Shared Lessons</a>
+                    </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="peDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-dumbbell me-1"></i>PE Tools
-                        </a>
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Tools</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'plan_generator' %}">
-                                <i class="fas fa-magic me-1"></i>Lesson Plan Generator
-                            </a></li>
-                            <li><a class="dropdown-item" href="{% url 'activity_bank' 'warmup' %}">
-                                <i class="fas fa-clipboard-list me-1"></i>Activity Bank
-                            </a></li>
-                            <li><a class="dropdown-item" href="{% url 'safety_guidelines' %}">
-                                <i class="fas fa-shield-alt me-1"></i>Safety Guidelines
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'equipment_list' %}">
-                                <i class="fas fa-basketball-ball me-1"></i>Equipment Inventory
-                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'lessons:progress_tracker' %}">Progress Tracker</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lessons:plan_generator' %}">Plan Generator</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lessons:equipment_list' %}">Equipment</a></li>
                         </ul>
                     </li>
-                </ul>
-
-                <form class="d-flex me-2" action="{% url 'search_results' %}" method="get">
-                    <input class="form-control me-2" type="search" name="q" placeholder="Search lessons...">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
-
-                <ul class="navbar-nav ms-auto">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user-circle me-1"></i>{{ user.username }}
-                                {% if user.profile and user.profile.school %}
-                                    <span class="badge bg-light text-dark ms-1" title="Your school">{{ user.profile.school.name|truncatechars:10 }}</span>
-                                {% endif %}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="{% url 'dashboard' %}">
-                                    <i class="fas fa-tachometer-alt me-1"></i>Dashboard
-                                </a></li>
-                                <li><a class="dropdown-item" href="{% url 'profile_update' %}">
-                                    <i class="fas fa-user-edit me-1"></i>My Profile
-                                </a></li>
-                                <li><a class="dropdown-item" href="{% url 'progress_tracker' %}">
-                                    <i class="fas fa-chart-line me-1"></i>Progress Tracker
-                                </a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <form method="post" action="{% url 'account_logout' %}">
-                                        {% csrf_token %}
-                                        <button type="submit" class="dropdown-item">
-                                            <i class="fas fa-sign-out-alt me-1"></i>Log Out
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'account_login' %}">
-                                <i class="fas fa-sign-in-alt me-1"></i>Log In
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'account_signup' %}">
-                                <i class="fas fa-user-plus me-1"></i>Sign Up
-                            </a>
-                        </li>
-                    {% endif %}
-                    <li class="nav-item ms-2">
-                        <button id="themeToggle" class="btn btn-sm btn-outline-light">
-                            <i class="fas fa-moon"></i>
-                        </button>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'lessons:contact' %}">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'accounts:profile_update' %}">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'account_logout' %}">Log Out</a>
                     </li>
                 </ul>
             </div>
@@ -159,34 +96,7 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="flex-grow-1">
-        {% block hero_slider %}
-        <section class="hero-slider">
-            <div class="slider-container">
-                <div class="slide active" style="background-image: url('{% static 'images/slide1.jpg' %}')">
-                    <div class="slide-content">
-                        <h2>Master Your Sport</h2>
-                        <p>Professional training for all skill levels</p>
-                        <a href="#classes" class="cta-button">
-                            <i class="fas fa-arrow-down me-2"></i>Get Started
-                        </a>
-                    </div>
-                </div>
-                <div class="slide" style="background-image: url('{% static 'images/slide2.jpg' %}')">
-                    <div class="slide-content">
-                        <h2>Join Group Classes</h2>
-                        <p>Fun and motivating sessions</p>
-                        <a href="#classes" class="cta-button">
-                            <i class="fas fa-users me-2"></i>View Schedule
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <button class="slider-nav prev" aria-label="Previous slide">❮</button>
-            <button class="slider-nav next" aria-label="Next slide">❯</button>
-        </section>
-        {% endblock hero_slider %}
-
+    <main class="flex-grow-1" style="padding-top: 80px;">
         <div class="container py-4 mt-5">
             {% block breadcrumbs %}
             {% if breadcrumbs %}
@@ -225,20 +135,20 @@
         </div>
     </main>
     <div class="wave-separator">
-      <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-        <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="currentColor"></path>
-        <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="currentColor"></path>
-        <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="currentColor"></path>
-      </svg>
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="currentColor"></path>
+            <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="currentColor"></path>
+            <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="currentColor"></path>
+        </svg>
     </div>
     <!-- Footer -->
     <footer class="footer py-3 mt-auto">
         <div class="container text-center">
             <div class="mb-2">
-                <a href="#" class="text-light mx-2"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="text-light mx-2"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="text-light mx-2"><i class="fab fa-instagram"></i></a>
-                <a href="{% url 'safety_guidelines' %}" class="text-light mx-2" title="Safety Guidelines">
+                <a href="#" class="text-light mx-2" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="text-light mx-2" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-light mx-2" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="{% url 'lessons:safety_guidelines' %}" class="text-light mx-2" title="Safety Guidelines" aria-label="Safety Guidelines">
                     <i class="fas fa-shield-alt"></i>
                 </a>
             </div>
@@ -247,7 +157,52 @@
     </footer>
 
     <!-- JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="{% static 'js/base.js' %}"></script>
+    <script>
+        // Theme toggle logic
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('.theme-icon');
+        const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+
+        // Set initial icon based on theme
+        if (currentTheme === 'dark') {
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const newTheme = document.documentElement.getAttribute('data-bs-theme') === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-bs-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            themeIcon.classList.toggle('fa-moon', newTheme === 'light');
+            themeIcon.classList.toggle('fa-sun', newTheme === 'dark');
+        });
+
+        // Enable nested dropdowns
+        document.querySelectorAll('.dropdown-submenu .dropdown-toggle').forEach((toggle) => {
+            toggle.addEventListener('click', (e) => {
+                const submenu = toggle.nextElementSibling;
+                if (!submenu.classList.contains('show')) {
+                    // Close other open submenus
+                    document.querySelectorAll('.dropdown-submenu .dropdown-menu.show').forEach((openMenu) => {
+                        openMenu.classList.remove('show');
+                    });
+                    submenu.classList.add('show');
+                } else {
+                    submenu.classList.remove('show');
+                }
+                e.stopPropagation();
+            });
+        });
+
+        // Close submenus when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.dropdown-submenu')) {
+                document.querySelectorAll('.dropdown-submenu .dropdown-menu.show').forEach((menu) => {
+                    menu.classList.remove('show');
+                });
+            }
+        });
+    </script>
 </body>
 </html>

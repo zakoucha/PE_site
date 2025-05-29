@@ -1,0 +1,25 @@
+/* Custom Theme Variables */
+:root {
+  --pe-primary: #2A9D8F;  /* Teal */
+  --pe-secondary: #264653; /* Navy */
+  --pe-accent: #E9C46A;   /* Gold */
+}
+
+/* Theme Classes */
+.bg-pe-primary { background-color: var(--pe-primary); }
+.btn-pe-primary { background-color: var(--pe-primary); border-color: var(--pe-primary); }
+.btn-pe-secondary { background-color: var(--pe-secondary); border-color: var(--pe-secondary); }
+.btn-pe-accent { background-color: var(--pe-accent); border-color: var(--pe-accent); }
+
+/* Hero Section */
+.pe-hero {
+  background: linear-gradient(45deg, var(--pe-secondary), var(--pe-primary));
+}
+
+/* Card Enhancements */
+.card {
+  transition: transform 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-5px);
+}

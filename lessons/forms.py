@@ -5,23 +5,10 @@ from .models import (
     Equipment,
     Activity,
     SkillAssessment,
-    Profile,
     School,
     SafetyRule,
     CurriculumDocument,
 )
-
-
-class ProfileForm(forms.ModelForm):
-    school = forms.ModelChoiceField(
-        queryset=School.objects.all(),
-        empty_label="Select your school",
-        widget=forms.Select(attrs={"class": "form-control"}),
-    )
-
-    class Meta:
-        model = Profile
-        fields = ["school"]
 
 
 class LessonForm(forms.ModelForm):
@@ -88,7 +75,7 @@ class ReplyForm(forms.ModelForm):
 
 
 class LessonPlanForm(forms.Form):
-    GRADE_CHOICES = [(i, f"Grade {i}") for i in range(1, 7)]
+    GRADE_CHOICES = [(i, f"Grade {i}") for i in range(1, 6)]
 
     grade_level = forms.ChoiceField(choices=GRADE_CHOICES)
     duration = forms.IntegerField(
@@ -193,3 +180,18 @@ class CurriculumDocumentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["trimester"].required = False
+
+
+class ContactForm(forms.Form):
+    subject = forms.CharField(
+        max_length=100, widget=forms.TextInput(attrs={"placeholder": "Subject"})
+    )
+    message = forms.CharField(
+        widget=forms.Textarea(
+            attrs={"placeholder": "Your feedback or suggestion", "rows": 5}
+        )
+    )
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={"placeholder": "Your email (optional)"}),
+        required=False,
+    )

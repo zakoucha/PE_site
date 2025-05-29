@@ -3,24 +3,10 @@ from django.db import models
 from django.conf import settings
 from django.urls import reverse
 from django.contrib.postgres.fields import ArrayField
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+
 from django.contrib.auth import get_user_model
-from django.utils import timezone
 
 User = get_user_model()
-
-
-class Profile(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile"
-    )
-    school = models.ForeignKey(
-        "School", on_delete=models.SET_NULL, null=True, blank=True
-    )
-
-    def __str__(self):
-        return f"{self.user.email}'s Profile"
 
 
 class Lesson(models.Model):
@@ -48,13 +34,16 @@ class Lesson(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     cover = models.ImageField(upload_to="covers/", blank=True, null=True)
-
+    shareable = models.BooleanField(
+        default=False, help_text="Allow other teachers to view"
+    )
     # PE-Specific Fields
     activity_type = models.CharField(
         max_length=20, choices=ACTIVITY_TYPES, default="main"
     )
     grade_level = models.IntegerField(choices=GRADE_LEVELS, default=1)
     duration = models.PositiveIntegerField(help_text="Duration in minutes", default=30)
+    video_url = models.URLField(blank=True, null=True)
     age_group = models.CharField(
         max_length=20, choices=AGE_GROUP_CHOICES, null=True, blank=True
     )
@@ -83,7 +72,7 @@ class Lesson(models.Model):
         return f"{self.title} (Grade {self.grade_level})"
 
     def get_absolute_url(self):
-        return reverse("lesson_detail", kwargs={"pk": self.pk})
+        return reverse("lessons:lesson_detail", kwargs={"pk": self.pk})
 
 
 class CurriculumDocument(models.Model):
@@ -120,8 +109,9 @@ class CurriculumDocument(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         null=True,
-        related_name='uploaded_documents'
+        related_name="uploaded_documents",
     )
+
     class Meta:
         ordering = ["grade", "document_type", "-version"]
         unique_together = [("grade", "document_type", "academic_year", "version")]
@@ -146,6 +136,7 @@ class Equipment(models.Model):
         null=True,
     )
     quantity = models.PositiveIntegerField(default=1)
+    available = models.PositiveIntegerField(default=1)
     storage_location = models.CharField(max_length=100)
     condition = models.CharField(
         max_length=20, choices=CONDITION_CHOICES, default="good"
@@ -193,6 +184,7 @@ class Activity(models.Model):
     grade_level = models.IntegerField(choices=Lesson.GRADE_LEVELS, default=1)
     equipment_needed = models.ManyToManyField(Equipment, blank=True)
     objectives = ArrayField(models.CharField(max_length=20), blank=True, default=list)
+    image = models.ImageField(upload_to="activity_images/", blank=True, null=True)
 
     def __str__(self):
         return f"{self.name} ({self.get_intensity_level_display()})"
@@ -290,13 +282,24 @@ class Review(models.Model):
         return self.likes.count()
 
 
-@receiver(post_save, sender=get_user_model())
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
+class Feedback(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="feedbacks",
+    )
+    subject = models.CharField(max_length=100)
+    message = models.TextField()
+    email = models.EmailField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.subject} by {self.user or self.email}"
 
 
-@receiver(post_save, sender=get_user_model())
-def save_user_profile(sender, instance, **kwargs):
-    if hasattr(instance, "profile"):
-        instance.profile.save()
+class ContactMessage(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)

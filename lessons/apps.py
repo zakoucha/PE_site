@@ -6,4 +6,4 @@ class LessonsConfig(AppConfig):
     name = "lessons"
 
     def ready(self):
-        from . import signals
+        pass

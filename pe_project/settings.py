@@ -18,7 +18,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool("DJANGO_DEBUG")
+DEBUG = os.getenv("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
@@ -45,10 +45,10 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.google",
     "django_extensions",
     "rest_framework",
+    "reportlab",
 ]
 
 MIDDLEWARE = [
-    "django.middleware.cache.UpdateCacheMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -58,8 +58,13 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
-    "django.middleware.cache.FetchFromCacheMiddleware",
 ]
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+    }
+}
 
 ROOT_URLCONF = "pe_project.urls"
 
@@ -188,3 +193,32 @@ INTERNAL_IPS = [ip[:-1] + "1" for ip in ips] + ["127.0.0.1"]  # Added explicit l
 CACHE_MIDDLEWARE_ALIAS = "default"
 CACHE_MIDDLEWARE_SECONDS = 604800
 CACHE_MIDDLEWARE_KEY_PREFIX = ""
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "your_app": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+    },
+}
+REST_FRAMEWORK = {
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "user": "100/hour",  # Adjust as needed
+    },
+}
+SECURE_SSL_REDIRECT = False if DEBUG else True
+SESSION_COOKIE_SECURE = False if DEBUG else True
+CSRF_COOKIE_SECURE = False if DEBUG else True
+CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000", "http://localhost:8000"]

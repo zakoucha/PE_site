@@ -4,69 +4,163 @@
 {% block title %}{% if form.instance.pk %}Update{% else %}Add New{% endif %} Equipment{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">
-                        <i class="fas fa-{% if form.instance.pk %}edit{% else %}plus-circle{% endif %} me-2"></i>
-                        {% if form.instance.pk %}Update Equipment{% else %}Add New Equipment{% endif %}
-                    </h4>
-                </div>
-                <div class="card-body">
-                    {% if not request.user.profile.school %}
-                    <div class="alert alert-danger">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        Your account is not associated with any school. Contact your administrator.
-                    </div>
-                    {% else %}
-                    {% endif %}
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-
-                    <form method="post" novalidate>
-                        {% csrf_token %}
-
-                        {% if form.non_field_errors %}
-                            <div class="alert alert-danger">
-                                {% for error in form.non_field_errors %}
-                                    <p class="mb-0">{{ error }}</p>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-
-                        {% for field in form %}
-                            <div class="mb-3">
-                                {{ field|as_crispy_field }}
-                                {% if field.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {% for error in field.errors %}
-                                            {{ error }}
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-                        {% endfor %}
-
-                        <div class="d-flex justify-content-between mt-4">
-                            <a href="{% url 'equipment_list' %}" class="btn btn-outline-secondary">
-                                <i class="fas fa-arrow-left me-2"></i>Cancel
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-2"></i>Save Equipment
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-lg border-0 rounded-3 equipment-form-card">
+        <!-- Card Header -->
+        <div class="card-header bg-primary text-white py-3">
+          <h4 class="mb-0 fw-bold">
+            <i class="fas fa-{% if form.instance.pk %}edit{% else %}plus-circle{% endif %} me-2"></i>
+            {% if form.instance.pk %}Update Equipment{% else %}Add New Equipment{% endif %}
+          </h4>
         </div>
+
+        <!-- Card Body -->
+        <div class="card-body p-4">
+          <!-- School Association Alert -->
+          {% if not request.user.profile.school %}
+          <div class="alert alert-danger alert-dismissible fade show rounded-3 shadow-sm" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            Your account is not associated with any school. Contact your administrator.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          {% endif %}
+
+          <!-- Messages -->
+          {% if messages %}
+          {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-3 shadow-sm" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          {% endfor %}
+          {% endif %}
+
+          <!-- Form -->
+          <form method="post" novalidate id="equipmentForm" class="needs-validation">
+            {% csrf_token %}
+
+            <!-- Non-Field Errors -->
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger alert-dismissible fade show rounded-3 shadow-sm" role="alert">
+              {% for error in form.non_field_errors %}
+              <p class="mb-0">{{ error }}</p>
+              {% endfor %}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endif %}
+
+            <!-- Form Fields -->
+            <div class="form-fields">
+              {% for field in form %}
+              <div class="mb-4 position-relative">
+                {{ field|as_crispy_field }}
+                {% if field.errors %}
+                <div class="invalid-feedback d-block mt-1">
+                  {% for error in field.errors %}
+                  <small>{{ error }}</small><br>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+              {% endfor %}
+            </div>
+
+            <!-- Sticky Footer Buttons -->
+            <div class="form-footer mt-4 p-3 bg-light border-top rounded-bottom sticky-bottom shadow-sm">
+              <div class="d-flex justify-content-between align-items-center">
+                <a href="{% url 'equipment_list' %}" class="btn btn-outline-secondary transition-all" aria-label="Cancel and return to equipment list">
+                  <i class="fas fa-arrow-left me-2"></i>Cancel
+                </a>
+                <button type="submit" class="btn btn-primary transition-all position-relative" id="submitButton" aria-label="Save equipment">
+                  <span class="button-text">
+                    <i class="fas fa-save me-2"></i>Save Equipment
+                  </span>
+                  <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
+
+<!-- Custom CSS -->
+<style>
+.equipment-form-card {
+  transition: all 0.3s ease;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.equipment-form-card:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
+}
+.transition-all {
+  transition: all 0.3s ease;
+}
+.transition-all:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.sticky-bottom {
+  position: sticky;
+  bottom: 0;
+  z-index: 1000;
+}
+.alert {
+  border: none;
+  border-radius: 8px;
+}
+.form-footer {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(248, 249, 250, 1));
+}
+.form-fields .form-label {
+  font-weight: 500;
+  color: #343a40;
+}
+.form-control:focus, .form-select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+.invalid-feedback {
+  color: #dc3545;
+  font-size: 0.875rem;
+}
+@media (max-width: 768px) {
+  .display-4 {
+    font-size: 2.5rem;
+  }
+  .card-body {
+    padding: 1.5rem;
+  }
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+</style>
+
+<!-- Custom JavaScript -->
+<script>
+document.getElementById('equipmentForm').addEventListener('submit', function(e) {
+  const submitButton = document.getElementById('submitButton');
+  const buttonText = submitButton.querySelector('.button-text');
+  const spinner = submitButton.querySelector('.spinner-border');
+
+  // Disable button and show spinner
+  submitButton.disabled = true;
+  buttonText.classList.add('d-none');
+  spinner.classList.remove('d-none');
+
+  // Simulate form submission (remove in production if backend handles redirection)
+  setTimeout(() => {
+    submitButton.disabled = false;
+    buttonText.classList.remove('d-none');
+    spinner.classList.add('d-none');
+  }, 2000);
+});
+</script>
 {% endblock %}
